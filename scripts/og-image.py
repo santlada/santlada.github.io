@@ -17,7 +17,7 @@ PHONE = '+7 928 598-34-32'
 BRAND = 'SANTLADA'
 
 NIGHT = (26, 38, 51)  # --color-night
-GOLD = (200, 149, 95)  # золотой край в логотипе
+GOLD = (207, 160, 98)  # золотой край в логотипе
 WHITE = (255, 255, 255)
 
 W, H = 1200, 630
@@ -41,28 +41,29 @@ def text(d: ImageDraw.ImageDraw, xy, s: str, family: str, size: int, weight: int
 
 
 def logo(size: int, bg=NIGHT, fg=WHITE) -> Image.Image:
-    """Знак как в Logo.astro (координаты в поле 64×34); bg=None — без подложки."""
+    """Знак как в Logo.astro (координаты в поле 80×48; в иконках линии чуть толще); bg=None — без подложки."""
     k = 8  # рисуем крупнее и уменьшаем — так края гладкие
     s = size * k
     im = Image.new('RGBA', (s, s), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
     if bg is not None:
         d.rounded_rectangle([0, 0, s - 1, s - 1], radius=round(s * 9 / 32), fill=bg)
-    f = s * 0.8 / 64
-    x0, y0 = s * 0.08, (s - 34 * f) / 2
+    f = s * 0.82 / 80
+    x0, y0 = s * 0.09, (s - 48 * f) / 2 - 1.5 * f
+    thick = 4.0 if size <= 64 and bg is not None else 3.2
 
     def pt(x, y):
         return (x0 + x * f, y0 + y * f)
 
     beam = Image.new('RGBA', (s, s), (0, 0, 0, 0))
-    ImageDraw.Draw(beam).polygon([pt(22.7, 18.6), pt(25.3, 18.6), pt(30, 31), pt(18, 31)], fill=(*fg, 70))
+    ImageDraw.Draw(beam).polygon([pt(29.6, 23.4), pt(34.4, 23.4), pt(42, 43), pt(22, 43)], fill=(*fg, 70))
     im = Image.alpha_composite(im, beam)
     d = ImageDraw.Draw(im)
-    d.polygon([pt(3, 19), pt(41, 2.2), pt(41, 4.6), pt(3.9, 19.5)], fill=fg)
-    d.line([pt(3.4, 19.3), pt(21, 25)], fill=fg, width=max(1, round(0.9 * f)))
-    d.line([pt(41, 3.3), pt(56, 9.6), pt(56, 31), pt(60.6, 28.8)], fill=GOLD, width=round(2.1 * f), joint='curve')
-    cx, cy = pt(24, 18)
-    d.ellipse([cx - 2 * f, cy - 0.9 * f, cx + 2 * f, cy + 0.9 * f], fill=fg)
+    d.line([pt(2.5, 32), pt(54, 6.5)], fill=fg, width=round(thick * f))
+    d.line([pt(3, 34), pt(27, 41.5)], fill=fg, width=max(1, round(1.1 * f)))
+    d.line([pt(54, 6.5), pt(76, 16.5), pt(76, 43)], fill=GOLD, width=round(thick * f), joint='curve')
+    cx, cy = pt(32, 22.4)
+    d.ellipse([cx - 3 * f, cy - 1.2 * f, cx + 3 * f, cy + 1.2 * f], fill=fg)
     return im.resize((size, size), Image.LANCZOS)
 
 
@@ -110,12 +111,12 @@ with open('public/favicon.svg', 'w', encoding='utf-8', newline='\n') as f:
     f.write(
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">\n'
         '  <rect width="32" height="32" rx="9" fill="#1a2633"/>\n'
-        '  <g transform="translate(2.6 9.2) scale(0.42)">\n'
-        '    <path d="M22.7 18.6h2.6L30 31H18Z" fill="#fff" fill-opacity="0.28"/>\n'
-        '    <path d="M3 19 41 2.2v2.4L3.9 19.5Z" fill="#fff"/>\n'
-        '    <path d="M3.4 19.3 21 25" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>\n'
-        '    <path d="M41 3.3 56 9.6V31l4.6-2.2" fill="none" stroke="#c8955f" stroke-width="2.6"/>\n'
-        '    <ellipse cx="24" cy="18" rx="2" ry="0.9" fill="#fff"/>\n'
+        '  <g transform="translate(2.9 6.4) scale(0.41)">\n'
+        '    <path d="M29.6 23.4h4.8L42 43H22Z" fill="#fff" fill-opacity="0.28"/>\n'
+        '    <path d="M2.5 32 54 6.5" fill="none" stroke="#fff" stroke-width="4"/>\n'
+        '    <path d="M3 34 27 41.5" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>\n'
+        '    <path d="M54 6.5 76 16.5V43" fill="none" stroke="#cfa062" stroke-width="4"/>\n'
+        '    <ellipse cx="32" cy="22.4" rx="3" ry="1.2" fill="#fff"/>\n'
         '  </g>\n'
         '</svg>\n'
     )
