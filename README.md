@@ -33,8 +33,7 @@ npm run dev        # открыть сайт: http://localhost:4321
 | Фото на первом экране (настоящий снимок потолка, лучше с подсветкой, от 1600 px по ширине; поверх него идёт синяя тонировка) | `src/assets/hero/ceiling.jpg` |
 | Текст на первом экране | `src/components/Hero.astro` |
 | **Цвета сайта**: акцент `--color-brand`, светлый фон блоков `--color-page-tint`, тёмный фон блоков `--color-brand-deep` | `src/styles/global.css`, в самом начале |
-| Какого цвета блок: в начале файла блока `data-tone="white"`, `"tint"` (светло-синий) или `"deep"` (тёмно-синий). Соседние блоки лучше делать разными | `src/components/*.astro` |
-| Как цвет «выезжает» при появлении блока: `data-fx="curtain-up"`, `"curtain-down"`, `"slant"`, `"split"` или `"from-right"` | `src/components/*.astro` |
+| Какого цвета блок: в начале файла блока `data-tone="white"` (белый) или `"blue"` (синяя панель со скруглёнными углами). Соседние блоки лучше делать разными | `src/components/*.astro` |
 
 Порядок блоков главной — в `src/pages/index.astro`: первый экран → Полотна и цены → Работы → До и после → Проект (и шаги заказа) → Мастер → Вопросы → Контакты.
 
@@ -167,4 +166,4 @@ scripts/           скачивание из Telegram, сжатие видео, 
 public/            иконки, og.jpg, robots.txt
 ```
 
-Картинка для превью ссылки в мессенджерах — `public/og.jpg`. Пересоздать её (например, после смены телефона): `python scripts/og-image.py` (нужен Python и `pip install pillow`).
+Картинка для превью ссылки в мессенджерах — `public/og.jpg`, иконки сайта — `public/favicon.svg` и PNG рядом. Пересоздать их (например, после смены телефона или фото первого экрана): `python scripts/og-image.py` (нужен Python и `pip install pillow`).

@@ -49,8 +49,10 @@ export interface CanvasInfo {
   nameRu: string;
   /** Страна и материал — строка над названием */
   origin: string;
-  /** Цена полотна, ₽ за м² */
+  /** Цена полотна, ₽ за м² (самая низкая — если фактуры стоят по-разному) */
   price: number;
+  /** Цена отдельной фактуры, если она отличается от price */
+  prices?: Partial<Record<Finish, number>>;
   /** Короткая метка: «Популярное», «Премиум» */
   badge?: string;
   /** Цвет кусочка полотна в анимации */
@@ -69,6 +71,7 @@ export const canvases: CanvasInfo[] = [
     nameRu: 'МСД Премиум',
     origin: 'Китай · ПВХ-плёнка',
     price: 450,
+    prices: { matte: 450, satin: 500, gloss: 500 },
     badge: 'Популярное',
     tone: '#f6f6f3',
     finishes: ['matte', 'satin', 'gloss'],
@@ -170,3 +173,14 @@ export const canvases: CanvasInfo[] = [
     ],
   },
 ];
+
+/** Цена выбранной фактуры, ₽ за м² */
+export const priceOf = (c: CanvasInfo, finish?: Finish): number => (finish && c.prices?.[finish]) || c.price;
+
+/** Цена для заявки и подписей: «650» или «450–500», если фактуры стоят по-разному */
+export function priceLabel(c: CanvasInfo): string {
+  const all = c.finishes.map((f) => priceOf(c, f));
+  const lo = Math.min(...all);
+  const hi = Math.max(...all);
+  return lo === hi ? String(lo) : `${lo}–${hi}`;
+}

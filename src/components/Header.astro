@@ -1,7 +1,7 @@
 ---
 import Logo from './Logo.astro';
 import { IconMenu, IconPhone, IconWhatsApp } from './icons';
-import { site } from '../config/site';
+import { navLinks, site } from '../config/site';
 import { waLink } from '../lib/whatsapp';
 
 interface Props {
@@ -10,19 +10,12 @@ interface Props {
 const { page } = Astro.props;
 const home = page === 'home' ? '' : import.meta.env.BASE_URL;
 
-const nav = [
-  { href: `${home}#ceny`, label: 'Цены' },
-  { href: `${home}#raboty`, label: 'Работы' },
-  { href: `${home}#do-posle`, label: 'До и после' },
-  { href: `${home}#proekt`, label: 'Проект' },
-  { href: `${home}#voprosy`, label: 'Вопросы' },
-  { href: `${home}#kontakty`, label: 'Контакты', mobileOnly: true },
-];
+const nav = navLinks.map((l) => ({ href: `${home}#${l.id}`, label: l.label, mobileOnly: l.id === 'kontakty' }));
 const wa = waLink('Здравствуйте! Пишу с сайта по поводу натяжного потолка.');
 ---
 
 <header
-  class="site-header sticky top-0 z-40 border-b border-line/70 bg-ceiling/90 max-lg:bg-ceiling lg:backdrop-blur-md"
+  class="site-header sticky top-0 z-40 border-b border-line/70 bg-ceiling"
   data-over={page === 'home' ? '' : undefined}
 >
   <div class="container-page flex h-16 items-center gap-3 lg:h-[4.5rem]">

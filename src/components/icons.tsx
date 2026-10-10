@@ -154,3 +154,9 @@ export const IconArrowUpRight = (p: P) => (
     <path d="M7 17 17 7M8 7h9v9" />
   </svg>
 );
+
+export const IconArrowUp = (p: P) => (
+  <svg {...base(p)}>
+    <path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" />
+  </svg>
+);

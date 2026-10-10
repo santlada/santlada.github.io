@@ -1,4 +1,4 @@
-import { canvases } from '../config/canvases';
+import { canvases, priceLabel } from '../config/canvases';
 import { site } from '../config/site';
 
 export interface Contact {
@@ -28,7 +28,7 @@ export function buildMeasureMessage(contact: Contact): string {
   if (clean(contact.name)) lines.push(`Имя: ${clean(contact.name)}`);
   if (clean(contact.city)) lines.push(`Адрес: ${clean(contact.city)}`);
   if (clean(contact.when)) lines.push(`Замер: ${clean(contact.when).toLowerCase()}`);
-  lines.push(`Полотно: ${canvas ? (info ? `${canvas}, ${info.price} ₽/м²` : canvas) : 'посоветуйте'}`);
+  lines.push(`Полотно: ${canvas ? (info ? `${canvas}, ${priceLabel(info)} ₽/м²` : canvas) : 'посоветуйте'}`);
 
   const blocks = [lines];
   if (clean(contact.comment)) blocks.push([`Что нужно: ${clean(contact.comment)}`]);

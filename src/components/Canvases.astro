@@ -5,10 +5,10 @@ import { canvases } from '../config/canvases';
 // Цены, тексты и сцены — src/config/canvases.ts; анимации — global.css, раздел «Полотна: история при прокрутке»
 ---
 
-<section id="ceny" class="page scroll-mt-20" data-tone="tint" data-fx="curtain-up" data-reveal aria-labelledby="ceny-title">
-  <div class="container-page pt-16 lg:pt-24">
+<section id="ceny" class="page scroll-mt-20" data-tone="white" data-reveal aria-labelledby="ceny-title">
+  <div class="container-page pt-20 lg:pt-32">
     <div class="max-w-2xl" data-rise>
-      <h2 id="ceny-title" class="h-section">Полотна и цены</h2>
+      <h2 id="ceny-title" class="h-section">Три полотна — цена за метр сразу</h2>
       <p class="lead mt-3">
         Я работаю с тремя полотнами — от надёжного на каждый день до немецкого премиума. Покажу каждое
         вблизи: толщину, ширину рулона и чем оно лучше. Цена — за 1 м² полотна.
@@ -18,7 +18,7 @@ import { canvases } from '../config/canvases';
 
   <CanvasStory client:load items={canvases} />
 
-  <div class="container-page pb-16 lg:pb-24">
+  <div class="container-page pb-20 lg:pb-32">
     <p class="max-w-3xl text-[0.9375rem] leading-relaxed text-ink-soft">
       Профиль, подсветка, световые линии, светильники и карниз считаются отдельно — они зависят от проекта. Итоговую сумму
       называю после бесплатного замера, до начала работ.

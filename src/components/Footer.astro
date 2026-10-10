@@ -8,8 +8,9 @@ const year = new Date().getFullYear();
 const base = import.meta.env.BASE_URL;
 ---
 
-<footer class="border-t border-line bg-plane">
-  <div class="container-page grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr]">
+<!-- Подвал — последняя синяя панель; внизу название во всю ширину -->
+<footer class="site-footer">
+  <div class="container-page grid gap-10 pt-14 pb-8 md:grid-cols-[1.4fr_1fr_1fr] lg:pt-20">
     <div>
       <Logo />
       <p class="mt-4 max-w-sm text-[0.9375rem] text-ink-soft">
@@ -18,22 +19,22 @@ const base = import.meta.env.BASE_URL;
     </div>
 
     <div>
-      <h2 class="font-semibold">Связаться</h2>
-      <ul class="mt-3 grid gap-2 text-[0.9375rem]">
+      <h2 class="font-display text-[0.9375rem] font-medium">Связаться</h2>
+      <ul class="mt-4 grid gap-2.5 text-[0.9375rem]">
         <li>
-          <a href={`tel:+${site.phoneDigits}`} class="inline-flex items-center gap-2 hover:text-brand-deep">
+          <a href={`tel:+${site.phoneDigits}`} class="inline-flex items-center gap-2 hover:underline">
             <IconPhone size={18} />
             {site.phone}
           </a>
         </li>
         <li>
-          <a href={waLink()} target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-brand-deep">
+          <a href={waLink()} target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:underline">
             <IconWhatsApp size={18} />
             WhatsApp
           </a>
         </li>
         <li>
-          <a href={site.telegram} target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-brand-deep">
+          <a href={site.telegram} target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:underline">
             <IconTelegram size={18} />
             Telegram-канал с работами
           </a>
@@ -41,7 +42,7 @@ const base = import.meta.env.BASE_URL;
         {
           site.instagram && (
             <li>
-              <a href={site.instagram} target="_blank" rel="noopener" class="hover:text-brand-deep">
+              <a href={site.instagram} target="_blank" rel="noopener" class="hover:underline">
                 Instagram
               </a>
             </li>
@@ -51,19 +52,20 @@ const base = import.meta.env.BASE_URL;
     </div>
 
     <div>
-      <h2 class="font-semibold">На сайте</h2>
-      <ul class="mt-3 grid gap-2 text-[0.9375rem] text-ink-soft">
-        <li><a href={`${base}#ceny`} class="hover:text-ink">Полотна и цены</a></li>
-        <li><a href={`${base}#raboty`} class="hover:text-ink">Работы</a></li>
-        <li><a href={`${base}#do-posle`} class="hover:text-ink">До и после</a></li>
-        <li><a href={`${base}#voprosy`} class="hover:text-ink">Частые вопросы</a></li>
+      <h2 class="font-display text-[0.9375rem] font-medium">На сайте</h2>
+      <ul class="mt-4 grid gap-2.5 text-[0.9375rem] text-ink-soft">
+        <li><a href={`${base}#ceny`} class="hover:text-white">Полотна и цены</a></li>
+        <li><a href={`${base}#raboty`} class="hover:text-white">Работы</a></li>
+        <li><a href={`${base}#do-posle`} class="hover:text-white">До и после</a></li>
+        <li><a href={`${base}#voprosy`} class="hover:text-white">Частые вопросы</a></li>
       </ul>
     </div>
   </div>
-  <div class="border-t border-line">
-    <div class="container-page flex flex-col gap-2 py-5 text-[0.8125rem] text-ink-soft sm:flex-row sm:justify-between">
-      <p>© {year} {site.brand}</p>
-      <p>Цены на сайте предварительные и не являются публичной офертой.</p>
-    </div>
+
+  <p class="footer-mark" aria-hidden="true">{site.brand}</p>
+
+  <div class="container-page flex flex-col gap-2 border-t border-line py-5 text-[0.8125rem] text-ink-soft sm:flex-row sm:justify-between">
+    <p>© {year} {site.brand}</p>
+    <p>{site.workDays}</p>
   </div>
 </footer>

@@ -1,30 +1,90 @@
 ---
 import WorksGallery from './works/WorksGallery';
+import Renders from './works/Renders';
 import { IconTelegram } from './icons';
-import { site } from '../config/site';
-import { getWorks } from '../lib/works';
+import { ceilingOrder, ceilingTypes, site } from '../config/site';
+import { getRenders, getWorks } from '../lib/works';
+import { plural } from '../lib/plural';
 
+// Работы по разделам: для каждого вида — визуализации (комната, разрез, вблизи), плюсы и фото с объектов этого вида.
+// Работа с дополнительным видом (also в data/works.ts) показывается и в его разделе.
 const works = await getWorks();
+const sections = (await Promise.all(ceilingOrder
+  .map(async (type) => ({
+    type,
+    info: ceilingTypes[type],
+    renders: await getRenders(type),
+    // Сначала работы этого вида, затем те, где он дополнительный (иначе разделы начинаются с одного и того же фото)
+    list: works.filter((w) => w.types[0] === type).concat(works.filter((w) => w.types[0] !== type && w.types.includes(type))),
+  }))))
+  .filter((s) => s.list.length > 0);
 ---
 
-<section id="raboty" class="page scroll-mt-20" data-tone="white" data-fx="curtain-down" data-reveal aria-labelledby="raboty-title">
-  <div class="container-page py-16 lg:py-24">
+<section id="raboty" class="page scroll-mt-20" data-tone="blue" data-reveal aria-labelledby="raboty-title">
+  <div class="container-page py-20 lg:py-32">
     <div class="max-w-2xl" data-rise>
       <h2 id="raboty-title" class="h-section">Мои работы</h2>
       <p class="lead mt-3">
-        Настоящие объекты из моего Telegram-канала: световые линии, парящие, теневые и классические потолки. Понравился какой-то —
-        нажмите «Хочу такой потолок», и ссылка на него придёт мне в WhatsApp.
+        Четыре вида потолков, которые я делаю. У каждого — как он выглядит в комнате и в разрезе, и фото с моих
+        объектов. Понравился потолок — нажмите на фото и «Хочу такой потолок», ссылка придёт мне в WhatsApp.
       </p>
     </div>
 
-    <div class="mt-8" data-rise="zoom">
-      <WorksGallery client:load works={works} compact syncUrl />
+    <nav class="works-jump" aria-label="Виды потолков" data-rise>
+      {
+        sections.map((s) => (
+          <a href={`#vid-${s.type}`} class="chip whitespace-nowrap">
+            {s.info.name}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="works-sections">
+      {
+        sections.map((s, i) => (
+          <article id={`vid-${s.type}`} class="works-type scroll-mt-24" aria-labelledby={`vid-${s.type}-title`}>
+            <div class="works-type-head">
+              <div class="works-type-intro" data-rise="left">
+                <p class="works-type-num">
+                  {String(i + 1).padStart(2, '0')} / {String(sections.length).padStart(2, '0')}
+                </p>
+                <h3 id={`vid-${s.type}-title`} class="works-type-title">
+                  {s.info.name}
+                </h3>
+              </div>
+              <div class="works-type-visual">
+                <Renders client:visible {...s.renders} section={s.info.section} />
+              </div>
+              <div class="works-type-text" data-rise="left">
+                <p class="text-[1.0625rem] leading-relaxed text-ink-soft">{s.info.description}</p>
+                <ul class="works-pros">
+                  {s.info.pros.map((p) => (
+                    <li>{p}</li>
+                  ))}
+                </ul>
+                <p class="mt-4 text-[0.9375rem] text-ink-soft">
+                  <span class="font-semibold text-white">Где хорош:</span> {s.info.fits}
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-6" data-rise>
+              <p class="mb-3 text-[0.9375rem] font-semibold">
+                Мои объекты — {s.list.length} {plural(s.list.length, ['работа', 'работы', 'работ'])}
+                <span class="font-normal text-ink-soft lg:hidden"> · листайте вбок</span>
+              </p>
+              <WorksGallery client:load works={s.list} filters={false} layout="strip" syncUrl owns={s.type} />
+            </div>
+          </article>
+        ))
+      }
     </div>
 
-    <p class="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.9375rem] text-ink-soft" data-rise>
+    <p class="mt-10 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.9375rem] text-ink-soft" data-rise>
       <IconTelegram size={18} class="text-brand" />
       Новые объекты выкладываю в Telegram-канал
-      <a href={site.telegram} target="_blank" rel="noopener" class="font-semibold text-brand-deep underline-offset-4 hover:underline">
+      <a href={site.telegram} target="_blank" rel="noopener" class="font-semibold underline decoration-current/40 underline-offset-4 hover:decoration-current">
         «{site.telegramName}»
       </a>
     </p>

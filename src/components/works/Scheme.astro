@@ -1,0 +1,196 @@
+---
+import type { CeilingType } from '../../config/site';
+import { ceilingTypes } from '../../config/site';
+
+// Живая схема вида потолка: комната в перспективе и узел примыкания «в разрезе».
+// Анимация стартует, когда схема появилась на экране (data-in ставит Layout.astro), и рисуется только CSS — без скриптов.
+// Классический и теневой показаны «днём» (светлая комната), парящий и линии — «вечером», чтобы был виден свет.
+interface Props {
+  type: CeilingType;
+}
+const { type } = Astro.props;
+const lit = type === 'klassika' || type === 'tenevoy';
+const id = `sc-${type}`;
+
+// Стык потолка со стенами: левая стена, задняя, правая (комната от зрителя к задней стене)
+const perimeter = 'M0 0 L95 88 L305 88 L400 0';
+// Световые линии в полотне: контур в перспективе и перекрестье
+const lines = ['M71 14 L329 14 L285.5 72 L114.5 72 Z', 'M200 2 L200 86', 'M48 44 L352 44'];
+// Точечные светильники на потолке
+const spots = [
+  [118, 24],
+  [282, 24],
+  [150, 62],
+  [250, 62],
+];
+---
+
+<figure class="scheme" data-type={type} data-lit={lit ? '' : undefined} data-rise="zoom">
+  <svg class="scheme-room" viewBox="0 0 400 250" role="img" aria-label={`Схема: ${ceilingTypes[type].name.toLowerCase()} потолок в комнате`}>
+    <defs>
+      <linearGradient id={`${id}-ceil`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" class="sc-ceil-a"></stop>
+        <stop offset="1" class="sc-ceil-b"></stop>
+      </linearGradient>
+      <linearGradient id={`${id}-lw`} x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" class="sc-wall-a"></stop>
+        <stop offset="1" class="sc-wall-b"></stop>
+      </linearGradient>
+      <linearGradient id={`${id}-rw`} x1="1" y1="0" x2="0" y2="0">
+        <stop offset="0" class="sc-wall-a"></stop>
+        <stop offset="1" class="sc-wall-b"></stop>
+      </linearGradient>
+      <linearGradient id={`${id}-wash`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff6e6" stop-opacity="0.55"></stop>
+        <stop offset="1" stop-color="#fff6e6" stop-opacity="0"></stop>
+      </linearGradient>
+      <radialGradient id={`${id}-pool`}>
+        <stop offset="0" stop-color="#fff3dc" stop-opacity="0.75"></stop>
+        <stop offset="1" stop-color="#fff3dc" stop-opacity="0"></stop>
+      </radialGradient>
+      <filter id={`${id}-blur`} x="-20%" y="-60%" width="140%" height="220%">
+        <feGaussianBlur stdDeviation="5"></feGaussianBlur>
+      </filter>
+    </defs>
+
+    <!-- Комната -->
+    <polygon points="0,250 95,190 305,190 400,250" class="sc-floor"></polygon>
+    <polygon points="0,0 95,88 95,190 0,250" fill={`url(#${id}-lw)`}></polygon>
+    <polygon points="400,0 305,88 305,190 400,250" fill={`url(#${id}-rw)`}></polygon>
+    <rect x="95" y="88" width="210" height="102" class="sc-back"></rect>
+    <!-- Окно на задней стене — чтобы читалась комната -->
+    <rect x="168" y="108" width="64" height="58" rx="2" class="sc-window"></rect>
+    <path d="M200 108v58M168 137h64" class="sc-window-frame"></path>
+
+    {
+      type === 'paryashchiy' && (
+        <>
+          {/* Свет от ленты стекает по стенам */}
+          <polygon points="0,0 95,88 95,140 0,95" fill={`url(#${id}-wash)`} class="sc-on sc-breathe" style="--dl:1.4s" />
+          <polygon points="400,0 305,88 305,140 400,95" fill={`url(#${id}-wash)`} class="sc-on sc-breathe" style="--dl:1.4s" />
+          <polygon points="95,88 305,88 305,130 95,130" fill={`url(#${id}-wash)`} class="sc-on sc-breathe" style="--dl:1.4s" />
+        </>
+      )
+    }
+
+    <!-- Потолок -->
+    <g class:list={['sc-ceiling', type === 'paryashchiy' && 'sc-float']}>
+      <polygon points={type === 'tenevoy' ? '6,0 394,0 300,84 100,84' : '0,0 400,0 305,88 95,88'} fill={`url(#${id}-ceil)`}></polygon>
+
+      {
+        type === 'linii' &&
+          lines.map((d, i) => (
+            <>
+              <path d={d} class="sc-line-glow sc-draw sc-breathe" pathLength="1" filter={`url(#${id}-blur)`} style={`--dl:${0.3 + i * 0.7}s`} />
+              <path d={d} class="sc-line sc-draw" pathLength="1" style={`--dl:${0.3 + i * 0.7}s`} />
+            </>
+          ))
+      }
+
+      {
+        (type === 'klassika' || type === 'tenevoy') &&
+          spots.map(([x, y], i) => (
+            <>
+              <ellipse cx={x} cy={y + 6} rx="34" ry="14" fill={`url(#${id}-pool)`} class="sc-on" style={`--dl:${0.4 + i * 0.25}s`} />
+              <ellipse cx={x} cy={y} rx="6" ry="2.6" class="sc-spot sc-on" style={`--dl:${0.4 + i * 0.25}s`} />
+            </>
+          ))
+      }
+    </g>
+
+    {
+      type === 'paryashchiy' && (
+        <>
+          <path d={perimeter} class="sc-line-glow sc-draw sc-breathe" pathLength="1" filter={`url(#${id}-blur)`} style="--dl:0.3s" />
+          <path d={perimeter} class="sc-line sc-draw" pathLength="1" style="--dl:0.3s" />
+        </>
+      )
+    }
+
+    {
+      type === 'tenevoy' && (
+        <>
+          {/* Теневой зазор: полотно не доходит до стены */}
+          <path d="M0 0 L100 84 L300 84 L400 0" class="sc-gap sc-draw" pathLength="1" style="--dl:0.2s" />
+        </>
+      )
+    }
+
+    {
+      type === 'klassika' && (
+        <>
+          {/* Вставка по периметру и люстра */}
+          <path d={perimeter} class="sc-insert" />
+          <path d="M200 40v16" class="sc-cord" />
+          <ellipse cx="200" cy="70" rx="70" ry="26" fill={`url(#${id}-pool)`} class="sc-on sc-breathe" style="--dl:1.4s" />
+          <path d="M184 56h32l-6 10h-20Z" class="sc-lamp" />
+          <ellipse cx="200" cy="66" rx="10" ry="2.4" class="sc-spot sc-on" style="--dl:1.4s" />
+        </>
+      )
+    }
+  </svg>
+
+  <figcaption class="scheme-cut">
+    <svg viewBox="0 0 150 96" aria-hidden="true" class="scheme-cut-svg">
+      <defs>
+        <pattern id={`${id}-hatch`} width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="6" height="6" class="cut-wall-bg"></rect>
+          <path d="M0 0v6" class="cut-hatch"></path>
+        </pattern>
+        <linearGradient id={`${id}-beam`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff6e6" stop-opacity="0.8"></stop>
+          <stop offset="1" stop-color="#fff6e6" stop-opacity="0"></stop>
+        </linearGradient>
+      </defs>
+      <!-- Плита перекрытия и стена -->
+      <rect x="0" y="0" width="150" height="12" fill={`url(#${id}-hatch)`}></rect>
+      <rect x="0" y="0" width="26" height="96" fill={`url(#${id}-hatch)`}></rect>
+
+      {
+        type === 'klassika' && (
+          <>
+            <rect x="26" y="30" width="9" height="12" class="cut-profile" />
+            <path d="M35 40H150" class="cut-canvas" />
+            <path d="M26 40.5q5 4 10 0" class="cut-insert" />
+          </>
+        )
+      }
+      {
+        type === 'paryashchiy' && (
+          <>
+            <polygon points="30,48 26,96 78,96" fill={`url(#${id}-beam)`} class="sc-on sc-breathe" style="--dl:0.6s" />
+            <rect x="26" y="28" width="16" height="18" class="cut-profile" />
+            <rect x="30" y="40" width="7" height="4" rx="1" class="cut-led sc-on" style="--dl:0.4s" />
+            <path d="M42 36H150" class="cut-canvas" />
+          </>
+        )
+      }
+      {
+        type === 'tenevoy' && (
+          <>
+            <rect x="26" y="32" width="10" height="9" class="cut-profile" />
+            <rect x="26" y="41" width="12" height="7" class="cut-gap sc-on" style="--dl:0.3s" />
+            <path d="M38 40H150" class="cut-canvas" />
+            <path d="M27 54h10" class="cut-dim sc-on" style="--dl:0.8s" />
+          </>
+        )
+      }
+      {
+        type === 'linii' && (
+          <>
+            <path d="M26 40H80M98 40H150" class="cut-canvas" />
+            <polygon points="82,46 96,46 112,96 66,96" fill={`url(#${id}-beam)`} class="sc-on sc-breathe" style="--dl:0.6s" />
+            <path d="M80 26v20h18V26" class="cut-profile-u" />
+            <rect x="83" y="34" width="12" height="4" rx="1" class="cut-led sc-on" style="--dl:0.4s" />
+            <path d="M81 45h16" class="cut-diffuser" />
+            <rect x="26" y="34" width="8" height="10" class="cut-profile" />
+          </>
+        )
+      }
+    </svg>
+    <span>
+      <strong>В разрезе</strong>
+      {ceilingTypes[type].section}
+    </span>
+  </figcaption>
+</figure>

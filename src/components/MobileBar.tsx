@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
-import { site } from '../config/site';
+import { navLinks, site } from '../config/site';
 import { CANVAS_EVENT, openOrder } from '../lib/order';
 import { waLink } from '../lib/whatsapp';
-import { IconPhone, IconWhatsApp } from './icons';
+import { IconArrowUp, IconClose, IconMenu, IconPhone, IconWhatsApp } from './icons';
 
 /**
- * Нижняя панель на телефоне и круглая кнопка WhatsApp на компьютере.
+ * Нижняя панель на телефоне (звонок, меню, заказ), кнопка «наверх» и круглая кнопка WhatsApp на компьютере.
  * Пока на экране блок «Полотна и цены», главная кнопка заказывает показанное полотно
  * (в карточке полотна на телефоне своей кнопки нет — там всё место отдано картинке).
  */
 export default function MobileBar() {
   const wa = waLink('Здравствуйте! Пишу с сайта по поводу натяжного потолка.');
   const [canvas, setCanvas] = useState<string | null>(null);
+  const [menu, setMenu] = useState(false);
+  const [showTop, setShowTop] = useState(false);
+  const base = import.meta.env.BASE_URL;
 
   useEffect(() => {
     const on = (e: Event) => setCanvas((e as CustomEvent<{ canvas: string | null }>).detail.canvas);
@@ -19,16 +22,89 @@ export default function MobileBar() {
     return () => window.removeEventListener(CANVAS_EVENT, on);
   }, []);
 
+  // «Наверх» появляется, когда страница прокручена больше чем на экран
+  useEffect(() => {
+    const sync = () => setShowTop(window.scrollY > window.innerHeight);
+    sync();
+    window.addEventListener('scroll', sync, { passive: true });
+    return () => window.removeEventListener('scroll', sync);
+  }, []);
+
+  // Меню закрывается по Escape и не даёт странице прокручиваться под собой
+  useEffect(() => {
+    if (!menu) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setMenu(false);
+    document.addEventListener('keydown', onKey);
+    document.documentElement.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.documentElement.style.overflow = '';
+    };
+  }, [menu]);
+
+  const toTop = () => {
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' });
+  };
+
   return (
     <>
+      {menu && (
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Меню">
+          <button type="button" className="absolute inset-0 bg-ink/50" onClick={() => setMenu(false)} aria-label="Закрыть меню" tabIndex={-1} />
+          <div className="mobile-sheet absolute inset-x-0 bottom-0 rounded-t-[1.5rem] bg-plane px-4 pt-3 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[var(--shadow-float)]">
+            <div className="mb-1 flex items-center justify-between px-2">
+              <p className="text-[0.8125rem] font-medium tracking-wide text-ink-soft uppercase">Меню</p>
+              <button type="button" className="grid size-11 place-items-center rounded-full hover:bg-haze" onClick={() => setMenu(false)} aria-label="Закрыть меню" autoFocus>
+                <IconClose size={22} />
+              </button>
+            </div>
+            <ul className="grid">
+              {navLinks.map((l) => (
+                <li key={l.id}>
+                  <a href={`${base}#${l.id}`} className="block rounded-xl px-3 py-3.5 text-[1.125rem] font-medium hover:bg-haze" onClick={() => setMenu(false)}>
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <a href={`tel:+${site.phoneDigits}`} className="btn-ghost min-h-12">
+                <IconPhone size={18} />
+                Позвонить
+              </a>
+              <a href={wa} target="_blank" rel="noopener" className="btn-wa min-h-12">
+                <IconWhatsApp size={18} />
+                WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={toTop}
+        tabIndex={showTop ? undefined : -1}
+        aria-hidden={showTop ? undefined : true}
+        aria-label="Наверх"
+        className="to-top"
+        data-show={showTop || undefined}
+      >
+        <IconArrowUp size={22} />
+      </button>
+
       <nav
         aria-label="Быстрые действия"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-plane px-3 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] lg:hidden"
       >
-        <div className="grid grid-cols-[auto_1fr] gap-2">
+        <div className="grid grid-cols-[auto_auto_1fr] gap-2">
           <a href={`tel:+${site.phoneDigits}`} className="btn-ghost min-h-12 px-3.5" aria-label={`Позвонить: ${site.phone}`}>
             <IconPhone size={20} />
           </a>
+          <button type="button" className="btn-ghost min-h-12 px-3.5" onClick={() => setMenu(true)} aria-label="Открыть меню" aria-haspopup="dialog">
+            <IconMenu size={22} />
+          </button>
           {canvas ? (
             <button type="button" className="btn-primary btn-shine min-h-12" onClick={() => openOrder(canvas)}>
               Заказать {canvas}

@@ -8,29 +8,28 @@ const ways = [
     text: 'Пришлите фото потолка — из интернета или с этого сайта. Скажу, как сделать такой же в вашей комнате.',
   },
   {
-    title: 'Нет идеи — не страшно',
+    title: 'Нет идеи — не страшно',
     text: 'Дизайн предложу сам: посмотрю комнату и подберу полотно, профиль и свет под её форму.',
   },
   {
-    title: 'Дополнения — по месту',
+    title: 'Дополнения — по месту',
     text: 'Подсветку, линии, карниз и светильники посоветую на замере — с учётом мебели, окон и проводки.',
   },
 ];
 ---
 
-<section id="proekt" class="page scroll-mt-20" data-tone="tint" data-fx="slant" data-reveal aria-labelledby="proekt-title">
-  <div class="container-page py-16 lg:py-24">
+<section id="proekt" class="page scroll-mt-20" data-tone="blue" data-reveal aria-labelledby="proekt-title">
+  <div class="container-page py-20 lg:py-32">
     <div class="max-w-2xl" data-rise>
-      <h2 id="proekt-title" class="h-section">Проект — решаем вместе</h2>
-      <p class="lead mt-3">Считать самому не нужно. Выберите полотно и закажите — дальше я веду проект от идеи до монтажа.</p>
+      <h2 id="proekt-title" class="h-section">Считать ничего не нужно — я всё продумаю</h2>
+      <p class="lead mt-3">Выберите полотно или просто напишите — дальше я веду проект сам: от идеи и замера до последнего светильника.</p>
     </div>
 
     <ol class="mt-10 grid gap-4 md:grid-cols-3 lg:gap-6">
       {
-        ways.map((way, i) => (
-          <li class="rounded-[var(--radius-card)] bg-plane p-5 shadow-[var(--shadow-float)] sm:p-6" data-spot data-rise>
-            <span class="font-display text-[0.9375rem] font-semibold text-brand">{String(i + 1).padStart(2, '0')}</span>
-            <h3 class="mt-2 text-[1.125rem] font-semibold">{way.title}</h3>
+        ways.map((way) => (
+          <li class="card-light flex flex-col rounded-[var(--radius-media)] bg-plane p-6 shadow-[var(--shadow-float)] sm:p-8" data-spot data-rise>
+            <h3 class="font-display text-[1.125rem] leading-snug font-normal tracking-[-0.02em] text-brand sm:text-[1.25rem]">{way.title}</h3>
             <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink-soft">{way.text}</p>
           </li>
         ))
@@ -40,17 +39,17 @@ const ways = [
     <div class="mt-10" data-rise>
       <h3 class="text-[1.125rem] font-semibold">Что можно добавить к потолку</h3>
       <ul class="mt-4 flex flex-wrap gap-2">
-        {extras.map((x) => <li class="inline-flex min-h-10 items-center rounded-full bg-plane px-4 text-[0.9375rem] ring-1 ring-line ring-inset">{x}</li>)}
+        {extras.map((x) => <li class="inline-flex min-h-10 items-center rounded-full px-4 text-[0.9375rem] ring-1 ring-mist ring-inset">{x}</li>)}
       </ul>
     </div>
 
-    <div class="mt-8 flex flex-wrap gap-3" data-rise>
+    <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2" data-rise>
       <a href="#ceny" class="btn-primary btn-shine" data-magnet>Заказать полотно</a>
-      <a href="#kontakty" class="btn-ghost">Записаться на замер</a>
+      <a href="#kontakty" class="btn-link">Записаться на замер</a>
     </div>
 
     <div id="kak" class="mt-16 scroll-mt-24 border-t border-line pt-12 lg:mt-20">
-      <h3 class="font-display text-[1.375rem] font-semibold tracking-[-0.01em] sm:text-[1.625rem]" data-rise>Как проходит заказ</h3>
+      <h3 class="font-display text-[1.375rem] font-light tracking-[-0.03em] sm:text-[1.75rem]" data-rise>Как проходит заказ</h3>
       <ol class="relative mt-8 grid gap-8 lg:grid-cols-5 lg:gap-6">
         {
           steps.map((step, i) => (

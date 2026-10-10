@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { canvases } from '../config/canvases';
+import { canvases, priceLabel } from '../config/canvases';
 import { ORDER_EVENT } from '../lib/order';
 import QuickMeasure from './QuickMeasure';
 import { IconClose } from './icons';
 
-const rub = new Intl.NumberFormat('ru-RU').format;
 
 /** Окно заказа: открывается из каталога с выбранным полотном, заявка уходит мастеру в WhatsApp */
 export default function OrderDialog() {
@@ -42,7 +41,7 @@ export default function OrderDialog() {
           </h2>
           {info && (
             <p className="mt-1 text-[0.9375rem] text-ink-soft">
-              <b className="font-semibold text-brand tabular-nums">{rub(info.price)} ₽</b> за м² · {info.origin}
+              <b className="font-semibold text-brand tabular-nums">{priceLabel(info)} ₽</b> за м² · {info.origin}
             </p>
           )}
         </div>

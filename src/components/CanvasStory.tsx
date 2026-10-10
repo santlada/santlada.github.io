@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent, type RefObject } from 'react';
-import { finishNames, type CanvasInfo, type Finish, type Scene, type SceneKind } from '../config/canvases';
+import { finishNames, priceOf, type CanvasInfo, type Finish, type Scene, type SceneKind } from '../config/canvases';
 import { openOrder, showCanvas } from '../lib/order';
 import { waLink } from '../lib/whatsapp';
 import { IconChevronLeft, IconChevronRight, IconWhatsApp } from './icons';
@@ -380,12 +380,25 @@ export default function CanvasStory({ items }: { items: CanvasInfo[] }) {
   }, [c.name]);
 
   // Нажатие на шаг прокручивает страницу так, чтобы ступенька этой сцены встала на середину экрана
-  const toStep = (i: number) => {
+  const toStep = (i: number, instant = false) => {
     const el = rungs.current[i];
     if (!el) return;
     const box = el.getBoundingClientRect();
-    window.scrollTo({ top: window.scrollY + box.top + box.height / 2 - window.innerHeight / 2, behavior: reduced() ? 'auto' : 'smooth' });
+    window.scrollTo({
+      top: window.scrollY + box.top + box.height / 2 - window.innerHeight / 2,
+      behavior: instant || reduced() ? 'instant' : 'smooth',
+    });
   };
+
+  // Другое полотно всегда начинается с первого описания. Сцену задаёт прокрутка, поэтому страницу возвращаем к первой
+  // ступеньке мгновенно: карточка прилипшая, на экране она не двигается — просто сменяется содержимое.
+  const shownIndex = useRef(index);
+  useEffect(() => {
+    if (shownIndex.current === index) return;
+    shownIndex.current = index;
+    if (step > 0) toStep(0, true);
+    setStep(0);
+  }, [index]); // eslint-disable-line react-hooks/exhaustive-deps -- нужна только смена полотна, step берём на этот момент
 
   // Горизонтальный свайп по картинке — другое полотно (вертикальный жест остаётся прокруткой страницы)
   const onDown = (e: PointerEvent<HTMLDivElement>) => {
@@ -450,7 +463,7 @@ export default function CanvasStory({ items }: { items: CanvasInfo[] }) {
                   </h3>
                 </div>
                 <p className="cs-price">
-                  <b>{rub(c.price)} ₽</b>
+                  <b>{rub(priceOf(c, currentFinish))} ₽</b>
                   <span>за м²</span>
                 </p>
               </div>

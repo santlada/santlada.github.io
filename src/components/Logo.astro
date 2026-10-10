@@ -7,16 +7,30 @@ interface Props {
 }
 const { class: className = '', subtitle = true } = Astro.props;
 const base = import.meta.env.BASE_URL;
+// У каждого логотипа свой градиент: цвет луча берётся от текста именно этого логотипа
+const beam = `logo-beam-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
+<!--
+  Знак с фирменного логотипа: линия потолка, светильник с лучом и золотой край стены.
+  Линии и луч — цветом текста (белые на фото и синих панелях, тёмные на белом), край — всегда золотой.
+-->
 <a href={base} class:list={['group inline-flex items-center gap-2.5 rounded-lg', className]} aria-label={`${site.brand} — на главную`}>
-  <svg width="34" height="34" viewBox="0 0 32 32" aria-hidden="true" class="shrink-0">
-    <rect width="32" height="32" rx="8" fill="#0e1a3a"></rect>
-    <rect x="4.5" y="4.5" width="23" height="23" rx="4.5" fill="#fafcff"></rect>
-    <path d="M10 22 22 10" stroke="#1d4ed8" stroke-width="3" stroke-linecap="round"></path>
+  <svg width="54" height="29" viewBox="0 0 64 34" aria-hidden="true" class="shrink-0 overflow-visible">
+    <defs>
+      <linearGradient id={beam} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="currentColor" stop-opacity="0.55"></stop>
+        <stop offset="1" stop-color="currentColor" stop-opacity="0"></stop>
+      </linearGradient>
+    </defs>
+    <path d="M3 19 41 2.2v2.4L3.9 19.5Z" fill="currentColor"></path>
+    <path d="M3.4 19.3 21 25" stroke="currentColor" stroke-width="0.9" stroke-linecap="round"></path>
+    <path d="M41 3.3 56 9.6V31l4.6-2.2" fill="none" stroke="#c8955f" stroke-width="2.1" stroke-linejoin="miter"></path>
+    <path d="M22.7 18.6h2.6L30 31H18Z" fill={`url(#${beam})`}></path>
+    <ellipse cx="24" cy="18" rx="2" ry="0.9" fill="currentColor"></ellipse>
   </svg>
   <span class="flex flex-col leading-none">
-    <span class="font-display text-[1.0625rem] font-medium tracking-[0.14em]">{site.brand}</span>
+    <span class="font-display text-[1rem] font-medium tracking-[0.08em]">{site.brand}</span>
     {subtitle && <span class="mt-1 text-[0.75rem] text-ink-soft">натяжные потолки</span>}
   </span>
 </a>

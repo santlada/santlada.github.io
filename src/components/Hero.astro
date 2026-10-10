@@ -1,55 +1,77 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import ceiling from '../assets/hero/ceiling.jpg';
+import ceilingMobile from '../assets/hero/ceiling-mobile.jpg';
 import { site } from '../config/site';
+import { canvases } from '../config/canvases';
 import { plural } from '../lib/plural';
 
-// Первый экран: настоящий снимок потолка Исы на всю ширину и крупная фраза поверх него.
-// Подмена фото: файл src/assets/hero/ceiling.jpg (от 1600 px по ширине; лучше потолок со световыми линиями).
+// Первый экран: настоящий снимок потолка Исы без тонировки и оффер — что, где и почему у мастера.
+// Фото два: на компьютере — горизонтальное src/assets/hero/ceiling.jpg (от 1600 px по ширине),
+// на телефоне — вертикальное ceiling-mobile.jpg: оно стоит сверху, а текст лежит под ним и не закрывает потолок.
+// Заголовок разбит на строки, строки — на слова: каждое слово «натягивается» по ширине при загрузке.
+const lines = ['Натяжные потолки,', 'на которые', 'хочется смотреть'];
+const minPrice = Math.min(...canvases.map((c) => c.price));
+
 const facts = [
-  {
-    title: `Гарантия ${site.guaranteeYears} ${plural(site.guaranteeYears, ['год', 'года', 'лет'])}`,
-    note: 'на выполненную работу',
-  },
-  {
-    title: `Опыт ${site.experience}`,
-    note: 'работал в городах России',
-  },
-  {
-    title: 'Дизайн под ваш интерьер',
-    note: 'по вашему примеру или составлю сам',
-  },
+  { title: `от ${minPrice} ₽`, note: 'за м² полотна — цены открыто' },
+  { title: 'Замер бесплатно', note: 'приеду и посчитаю на месте' },
+  { title: `Гарантия ${site.guaranteeYears} ${plural(site.guaranteeYears, ['год', 'года', 'лет'])}`, note: 'на выполненную работу' },
+  { title: '5+ лет опыта', note: 'работал в городах России' },
 ];
+
+const mobile = await getImage({ src: ceilingMobile, widths: [480, 720, 1080], format: 'webp', quality: 80 });
+const desktop = await getImage({ src: ceiling, widths: [1024, 1600], format: 'webp', quality: 86 });
+
+let word = 0;
 ---
 
-<section class="hero">
-  <Image
-    src={ceiling}
-    alt="Натяжной потолок со световыми линиями и подвесной люстрой"
-    widths={[640, 1024, 1600]}
-    sizes="100vw"
-    format="webp"
-    quality={88}
-    loading="eager"
-    fetchpriority="high"
-    class="hero-photo"
-  />
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-media">
+    <picture>
+      <source media="(min-width: 64rem)" srcset={desktop.srcSet.attribute} sizes="100vw" type="image/webp" />
+      <img
+        src={mobile.src}
+        srcset={mobile.srcSet.attribute}
+        sizes="100vw"
+        width={ceilingMobile.width}
+        height={ceilingMobile.height}
+        alt="Натяжной потолок со световыми контурами вокруг люстры — работа Исы"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        class="hero-photo"
+      />
+    </picture>
+  </div>
   <div class="hero-shade" aria-hidden="true"></div>
 
   <div class="container-page hero-body">
-    <h1 class="hero-title">
-      <span class="sr-only">Santlada, натяжные потолки. </span>
-      <span class="hero-line">Потолок, который</span>
-      <span class="hero-line">хочется рассматривать</span>
+    <h1 id="hero-title" class="hero-title">
+      <span class="sr-only">Santlada — натяжные потолки {site.baseCityIn} и по Дагестану. </span>
+      {
+        lines.map((line) => (
+          <span class="hero-line" aria-hidden="true">
+            {line.split(' ').map((w) => (
+              <span class="hero-word" style={`--w:${word++}`}>{w}</span>
+            ))}
+          </span>
+        ))
+      }
+      <span class="sr-only">{lines.join(' ')}</span>
     </h1>
-    <p class="hero-lead">Создаю и восстанавливаю потолки: от ровного белого полотна до световых линий.</p>
 
-    <div class="hero-actions">
-      <a href="#raboty" class="btn-primary btn-shine hero-more">Смотреть работы</a>
-      <a href="#ceny" data-magnet class="btn-ghost hero-cta">Выбрать полотно</a>
+    <p class="hero-lead hero-in" style="--d:0">
+      Матовые, парящие, теневые и со световыми линиями. Сам замеряю, проектирую и монтирую — {site.baseCityIn} и по всему
+      Дагестану.
+    </p>
+
+    <div class="hero-actions hero-in" style="--d:1">
+      <a href="#kontakty" class="btn-primary btn-shine hero-cta" data-magnet>Бесплатный замер</a>
+      <a href="#raboty" class="btn-ghost hero-more">Смотреть работы</a>
     </div>
 
-    <ul class="hero-facts">
+    <ul class="hero-facts hero-in" style="--d:2">
       {
         facts.map((f) => (
           <li>

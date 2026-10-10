@@ -6,7 +6,7 @@
 import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
 import { ceilingTypes, ceilingOrder, type CeilingType } from '../config/site';
-import { beforeAfter, featured, showVideos, workInfo } from '../data/works';
+import { angleInfo, beforeAfter, featured, showVideos, workInfo } from '../data/works';
 
 export interface WorkImage {
   src: string;
@@ -45,6 +45,8 @@ const videoFiles = import.meta.glob<string>('/src/assets/videos/*/*.{mp4,MP4,web
   import: 'default',
 });
 const posterFiles = import.meta.glob<{ default: ImageMetadata }>('/src/assets/videos/*/*.{jpg,jpeg,png,webp}', { eager: true });
+const angleFiles = import.meta.glob<{ default: ImageMetadata }>('/src/assets/angles/*/*.{jpg,jpeg,png,webp}', { eager: true });
+const renderFiles = import.meta.glob<{ default: ImageMetadata }>('/src/assets/renders/*/*.{jpg,jpeg,png,webp}', { eager: true });
 const pairFiles = import.meta.glob<{ default: ImageMetadata }>('/src/assets/before-after/*.{jpg,jpeg,png,webp}', { eager: true });
 
 const parse = (path: string) => {
@@ -122,4 +124,35 @@ export function getBeforeAfter(): BeforeAfterPair[] {
     const after = find(`${pair.id}-posle`);
     return before && after ? [{ ...pair, before, after }] : [];
   });
+}
+
+/** Фото «с других ракурсов» по видам потолка — для блока про устройство вида */
+export async function getAngles(type: CeilingType): Promise<Work[]> {
+  const list: Work[] = [];
+  for (const [path, mod] of Object.entries(angleFiles).sort(([a], [b]) => a.localeCompare(b, 'ru', { numeric: true }))) {
+    const { type: t, file } = parse(path);
+    if (t !== type || !angleInfo[file]) continue;
+    list.push({ id: `a-${file}`, file, kind: 'photo', types: [type], caption: angleInfo[file], ...(await optimize(mod.default)) });
+  }
+  return list;
+}
+
+/**
+ * Визуализации вида потолка: комната, узел «в разрезе» и крупный план. Файлы — src/assets/renders/<вид>/{room,cut,close}.jpg.
+ * Нет файла — этот кадр просто не показывается.
+ */
+export async function getRenders(type: CeilingType): Promise<{ room?: Work; cut?: Work; close?: Work }> {
+  const info = ceilingTypes[type];
+  const captions = {
+    room: `${info.name} потолок в комнате — визуализация`,
+    cut: `В разрезе: ${info.section[0].toLowerCase()}${info.section.slice(1)} — визуализация`,
+    close: `${info.name} потолок вблизи — визуализация`,
+  };
+  const out: { room?: Work; cut?: Work; close?: Work } = {};
+  for (const key of ['room', 'cut', 'close'] as const) {
+    const found = Object.entries(renderFiles).find(([path]) => parse(path).type === type && parse(path).file === key);
+    if (!found) continue;
+    out[key] = { id: `r-${type}-${key}`, file: key, kind: 'photo', types: [type], caption: captions[key], ...(await optimize(found[1].default)) };
+  }
+  return out;
 }
