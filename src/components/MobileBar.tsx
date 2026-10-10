@@ -42,6 +42,9 @@ export default function MobileBar() {
     };
   }, [menu]);
 
+  // Пока на экране прилипшая карточка полотен, «Наверх» не показываем — кнопка легла бы на ползунок и образцы
+  const topVisible = showTop && !canvas;
+
   const toTop = () => {
     const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     window.scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' });
@@ -85,11 +88,11 @@ export default function MobileBar() {
       <button
         type="button"
         onClick={toTop}
-        tabIndex={showTop ? undefined : -1}
-        aria-hidden={showTop ? undefined : true}
+        tabIndex={topVisible ? undefined : -1}
+        aria-hidden={topVisible ? undefined : true}
         aria-label="Наверх"
         className="to-top"
-        data-show={showTop || undefined}
+        data-show={topVisible || undefined}
       >
         <IconArrowUp size={22} />
       </button>
