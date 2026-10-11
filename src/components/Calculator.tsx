@@ -15,6 +15,9 @@ type Mode = 'size' | 'area';
 
 const ADVISE = '';
 
+/** Фактура полотна; на цену не влияет — «Другое» (сатин, цвет, принт) обсуждаем на замере */
+const finishes = ['Матовое', 'Глянцевое', 'Другое'] as const;
+
 export default function Calculator() {
   const uid = useId();
   const [mode, setMode] = useState<Mode>('size');
@@ -22,6 +25,7 @@ export default function Calculator() {
   const [length, setLength] = useState('4,5');
   const [areaText, setAreaText] = useState('16');
   const [canvasName, setCanvasName] = useState('MSD Premium');
+  const [finish, setFinish] = useState<(typeof finishes)[number]>('Матовое');
   const [city, setCity] = useState('');
   const [error, setError] = useState('');
   const [sent, setSent] = useState(false);
@@ -48,6 +52,7 @@ export default function Calculator() {
     ...(mode === 'size' ? { width: w, length: l } : {}),
     area,
     canvas: canvasName,
+    finish,
     total,
     city,
   });
@@ -106,6 +111,25 @@ export default function Calculator() {
                   className="sr-only"
                 />
                 {name || 'Посоветуйте'}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend className="label">Фактура</legend>
+          <div className="flex flex-wrap gap-2">
+            {finishes.map((f) => (
+              <label key={f} className="chip calc-opt">
+                <input
+                  type="radio"
+                  name={`${uid}-finish`}
+                  value={f}
+                  checked={finish === f}
+                  onChange={() => setFinish(f)}
+                  className="sr-only"
+                />
+                {f}
               </label>
             ))}
           </div>

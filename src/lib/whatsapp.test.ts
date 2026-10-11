@@ -60,6 +60,12 @@ describe('расчёт с сайта', () => {
     );
   });
 
+  it('с фактурой полотна', () => {
+    const base = { area: 20, canvas: 'BAUF', total: 9000, city: 'Кизляр' };
+    expect(buildCalcMessage({ ...base, finish: 'Глянцевое' })).toContain('полотно BAUF, глянцевое, ориентир');
+    expect(buildCalcMessage({ ...base, finish: 'Другое' })).toContain('полотно BAUF, фактура другая — обсудим, ориентир');
+  });
+
   it('по площади и без выбранного полотна', () => {
     const text = buildCalcMessage({ area: 20, canvas: '', total: 9000, city: 'Кизляр' });
     expect(text).toContain('комната ~20 м²,');
