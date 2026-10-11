@@ -1,13 +1,12 @@
 import { startTransition, useCallback, useEffect, useRef, useState, type CSSProperties, type PointerEvent, type Ref } from 'react';
 import { finishNames, priceOf, type CanvasInfo, type Finish, type Scene, type SceneKind } from '../config/canvases';
 import { openOrder, showCanvas } from '../lib/order';
-import { waLink } from '../lib/whatsapp';
 import FanRoom from './canvas/FanRoom';
 import { meters, num, reduced } from './canvas/format';
 import Micrometer from './canvas/Micrometer';
 import TapeRoll, { RoomSlider } from './canvas/TapeRoll';
 import { useLamp } from './canvas/useLamp';
-import { IconChevronLeft, IconChevronRight, IconWhatsApp } from './icons';
+import { IconChevronLeft, IconChevronRight } from './icons';
 
 /*
  * «Полотна и цены» — история из сцен: по кусочку полотна скользит блик лампы, толщину меряет микрометр,
@@ -443,16 +442,6 @@ export default function CanvasStory({ items }: { items: CanvasInfo[] }) {
                 <button type="button" className="btn-primary btn-shine flex-1 sm:flex-none sm:px-7" onClick={() => openOrder(c.name)}>
                   Заказать это полотно
                 </button>
-                <a
-                  href={waLink(`Здравствуйте! Интересует натяжной потолок из полотна ${c.name}. Подскажите по проекту.`)}
-                  target="_blank"
-                  rel="noopener"
-                  className="btn-ghost px-4"
-                  aria-label={`Спросить про ${c.name} в WhatsApp`}
-                >
-                  <IconWhatsApp size={18} className="text-wa" />
-                  <span className="max-sm:sr-only">Спросить</span>
-                </a>
               </div>
             </div>
           </div>

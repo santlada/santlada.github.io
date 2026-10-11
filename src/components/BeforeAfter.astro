@@ -2,12 +2,9 @@
 import { Image } from 'astro:assets';
 import { ceilingTypes } from '../config/site';
 import { getBeforeAfter } from '../lib/works';
-import { waLink } from '../lib/whatsapp';
-import { IconWhatsApp } from './icons';
 
 // Пары фото — src/assets/before-after/<id>-do.jpg и <id>-posle.jpg, подписи — src/data/works.ts
 const pairs = getBeforeAfter();
-const wa = waLink('Здравствуйте! Пришлю фото своего потолка — подскажите, что можно сделать.');
 ---
 
 {
@@ -47,14 +44,6 @@ const wa = waLink('Здравствуйте! Пришлю фото своего 
             </li>
           ))}
         </ul>
-
-        <div class="mt-12 flex flex-col gap-4 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p class="max-w-xl text-[1.0625rem] leading-relaxed">Пришлите фото своего потолка — скажу, что из него можно сделать.</p>
-          <a href={wa} target="_blank" rel="noopener" class="btn-wa shrink-0">
-            <IconWhatsApp size={18} />
-            Написать в WhatsApp
-          </a>
-        </div>
       </div>
     </section>
   )

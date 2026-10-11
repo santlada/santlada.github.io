@@ -1,11 +1,8 @@
 ---
-import { IconWhatsApp } from './icons';
 import { extras, steps } from '../config/site';
-import { waLink } from '../lib/whatsapp';
 
 // Как проходит заказ: шаги от первого сообщения до гарантии и что можно добавить к потолку.
 // Шаги и дополнения — src/config/site.ts (steps, extras).
-const wa = waLink('Здравствуйте! Пишу с сайта по поводу натяжного потолка.');
 ---
 
 <section id="proekt" class="page scroll-mt-20" data-tone="white" data-reveal aria-labelledby="proekt-title">
@@ -55,10 +52,6 @@ const wa = waLink('Здравствуйте! Пишу с сайта по пов�
 
     <div class="mt-10 flex flex-wrap items-center gap-3">
       <a href="#kontakty" class="btn-primary">Записаться на замер</a>
-      <a href={wa} target="_blank" rel="noopener" class="btn-ghost">
-        <IconWhatsApp size={18} class="text-wa" />
-        Написать в WhatsApp
-      </a>
     </div>
   </div>
 </section>

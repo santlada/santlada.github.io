@@ -1,9 +1,5 @@
 ---
 import { faq } from '../config/site';
-import { waLink } from '../lib/whatsapp';
-import { IconWhatsApp } from './icons';
-
-const wa = waLink('Здравствуйте! У меня вопрос про натяжной потолок.');
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -18,10 +14,6 @@ const jsonLd = {
       <div class="lg:sticky lg:top-28 lg:self-start" data-rise="left">
         <h2 id="voprosy-title" class="h-section">Что спрашивают перед заказом</h2>
         <p class="lead mt-3">Не нашли ответ — напишите мне, отвечу.</p>
-        <a href={wa} target="_blank" rel="noopener" class="btn-primary mt-6">
-          <IconWhatsApp size={18} />
-          Написать в WhatsApp
-        </a>
       </div>
       <div class="divide-y divide-line border-y border-line">
         {

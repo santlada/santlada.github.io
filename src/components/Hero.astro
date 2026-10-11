@@ -5,8 +5,6 @@ import ceilingMobile from '../assets/hero/ceiling-mobile.jpg';
 import { site } from '../config/site';
 import { canvases } from '../config/canvases';
 import { plural } from '../lib/plural';
-import { waLink } from '../lib/whatsapp';
-import { IconWhatsApp } from './icons';
 
 // Первый экран: настоящий снимок потолка Исы без тонировки и оффер — что, где и почему у мастера.
 // Фото два: на компьютере — горизонтальное src/assets/hero/ceiling.jpg (от 1600 px по ширине),
@@ -25,7 +23,6 @@ const facts = [
 const mobile = await getImage({ src: ceilingMobile, widths: [480, 720, 1080], format: 'webp', quality: 80 });
 const desktop = await getImage({ src: ceiling, widths: [1024, 1600], format: 'webp', quality: 86 });
 
-const wa = waLink('Здравствуйте! Пишу с сайта по поводу натяжного потолка.');
 
 let word = 0;
 ---
@@ -76,10 +73,6 @@ let word = 0;
 
     <div class="hero-actions hero-in" style="--d:1">
       <a href="#kontakty" class="btn-primary btn-shine hero-cta" data-magnet>Записаться на замер</a>
-      <a href={wa} target="_blank" rel="noopener" class="btn-ghost hero-more">
-        <IconWhatsApp size={18} />
-        Написать в WhatsApp
-      </a>
     </div>
 
     <ul class="hero-facts hero-in" style="--d:2">

@@ -1,15 +1,12 @@
 ---
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { IconWhatsApp } from './icons';
 import { site } from '../config/site';
-import { waLink } from '../lib/whatsapp';
 
 // Фото мастера: положите снимок в src/assets/master/ (jpg, png или webp, вертикальный, от 1000 px по высоте) —
 // он сам появится справа от текста. Пока папка пустая, блок показывает только текст.
 const photos = import.meta.glob<{ default: ImageMetadata }>('/src/assets/master/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}', { eager: true });
 const photo = Object.values(photos)[0]?.default;
-const wa = waLink('Здравствуйте! Пишу с сайта по поводу натяжного потолка.');
 ---
 
 <section id="master" class="page scroll-mt-20" data-tone="blue" data-reveal aria-labelledby="master-title">
@@ -31,10 +28,6 @@ const wa = waLink('Здравствуйте! Пишу с сайта по пов�
           Дагестана, база — {site.baseCityIn}. На замер приезжаю бесплатно, куда бы ни ехать.
         </p>
       </div>
-      <a href={wa} target="_blank" rel="noopener" class="btn-primary mt-8">
-        <IconWhatsApp size={18} />
-        Написать в WhatsApp
-      </a>
     </div>
 
     {
