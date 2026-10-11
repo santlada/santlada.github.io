@@ -78,12 +78,12 @@ const sections = (await Promise.all(ceilingOrder
       }
     </div>
 
-    <p class="mt-10 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.9375rem] text-ink-soft">
-      <IconTelegram size={18} class="text-brand" />
-      Новые объекты выкладываю в Telegram-канал
-      <a href={site.telegram} target="_blank" rel="noopener" class="font-semibold underline decoration-current/40 underline-offset-4 hover:decoration-current">
-        «{site.telegramName}»
+    <div class="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-5">
+      <a href={site.telegram} target="_blank" rel="noopener" class="btn-ghost max-sm:w-full">
+        <IconTelegram size={18} />
+        Смотреть другие работы в Telegram
       </a>
-    </p>
+      <p class="text-[0.9375rem] text-ink-soft">Новые объекты выкладываю в канале «{site.telegramName}».</p>
+    </div>
   </div>
 </section>

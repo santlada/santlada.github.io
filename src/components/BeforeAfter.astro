@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
-import { ceilingTypes } from '../config/site';
+import { ceilingTypes, site } from '../config/site';
+import { IconTelegram } from './icons';
 import { getBeforeAfter } from '../lib/works';
 
 // Пары фото — src/assets/before-after/<id>-do.jpg и <id>-posle.jpg, подписи — src/data/works.ts
@@ -44,6 +45,14 @@ const pairs = getBeforeAfter();
             </li>
           ))}
         </ul>
+
+        <div class="mt-12 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-5" data-rise>
+          <a href={site.telegram} target="_blank" rel="noopener" class="btn-ghost max-sm:w-full">
+            <IconTelegram size={18} class="text-brand" />
+            Смотреть другие работы в Telegram
+          </a>
+          <p class="text-[0.9375rem] text-ink-soft">Новые объекты выкладываю в канале «{site.telegramName}».</p>
+        </div>
       </div>
     </section>
   )

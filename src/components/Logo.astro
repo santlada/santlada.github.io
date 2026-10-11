@@ -7,32 +7,26 @@ interface Props {
 }
 const { class: className = '', subtitle = true } = Astro.props;
 const base = import.meta.env.BASE_URL;
-// У каждого логотипа свой градиент: цвет луча берётся от текста именно этого логотипа
-const beam = `logo-beam-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
 <!--
-  Знак с фирменного логотипа: линия потолка, светильник с лучом и золотой край стены.
-  Линии и луч — цветом текста (белые на фото и синих панелях, тёмные на белом), край стены — золотой.
+  Знак с фирменного логотипа: белая световая балка потолка, золотая световая линия под ней,
+  светильник и золотой край стены. Балка и светильник — цветом текста (белые на фото и синих панелях,
+  тёмные на белом), золото — всегда золотое.
   Рядом — название широкой разреженной гарнитурой и тонкая подпись, как на оригинале.
 -->
 <a href={base} class:list={['group inline-flex items-center gap-3 rounded-lg', className]} aria-label={`${site.brand} — на главную`}>
   <svg width="58" height="35" viewBox="0 0 80 48" aria-hidden="true" class="shrink-0 overflow-visible">
-    <defs>
-      <linearGradient id={beam} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="currentColor" stop-opacity="0.6"></stop>
-        <stop offset="1" stop-color="currentColor" stop-opacity="0"></stop>
-      </linearGradient>
-    </defs>
-    <!-- линия потолка: толстая, от левого угла к верхнему -->
-    <path d="M2.5 32 54 6.5" fill="none" stroke="currentColor" stroke-width="3.2"></path>
-    <!-- тонкая линия плоскости -->
-    <path d="M3 34 27 41.5" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"></path>
+    <!-- балка потолка: от левого угла к верхнему -->
+    <path d="M2 31.4 62.8 3.2V8.9L3.9 32.1Z" fill="currentColor"></path>
+    <!-- золотая световая линия под балкой -->
+    <path d="M9.8 33.9 60.2 13.3 61.5 14.2 13.1 34.5Z" fill="var(--color-gold)"></path>
+    <!-- едва заметный край плоскости -->
+    <path d="M13.1 34.9 38 42.8" fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" opacity="0.35"></path>
+    <!-- светильник -->
+    <ellipse cx="44.2" cy="30.1" rx="4.4" ry="2" fill="currentColor"></ellipse>
     <!-- золотой край: вдоль стены вниз -->
-    <path d="M54 6.5 76 16.5V43" fill="none" stroke="var(--color-gold)" stroke-width="3.2" stroke-linejoin="miter"></path>
-    <!-- светильник и его луч -->
-    <path d="M29.6 23.4h4.8L42 43H22Z" fill={`url(#${beam})`}></path>
-    <ellipse cx="32" cy="22.4" rx="3" ry="1.2" fill="currentColor"></ellipse>
+    <path d="M62.9 3.2 78.1 13.3V44.8H73.3V15.8L62.9 8.9Z" fill="var(--color-gold)"></path>
   </svg>
   <span class="flex flex-col leading-none">
     <span class="font-display text-[1.125rem] font-normal tracking-[0.16em]">{site.brand}</span>
