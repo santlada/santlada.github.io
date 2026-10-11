@@ -2,15 +2,14 @@ import { startTransition, useCallback, useEffect, useRef, useState, type CSSProp
 import { finishNames, priceOf, type CanvasInfo, type Finish, type Scene, type SceneKind } from '../config/canvases';
 import { openOrder, showCanvas } from '../lib/order';
 import FanRoom from './canvas/FanRoom';
-import { meters, num, reduced } from './canvas/format';
+import { num, reduced } from './canvas/format';
 import Micrometer from './canvas/Micrometer';
-import TapeRoll, { RoomSlider } from './canvas/TapeRoll';
 import { useLamp } from './canvas/useLamp';
 import { IconChevronLeft, IconChevronRight } from './icons';
 
 /*
  * «Полотна и цены» — история из сцен: по кусочку полотна скользит блик лампы, толщину меряет микрометр,
- * рулетка и рулон показывают ширину, веер образцов перекрашивает потолок. Действие сцены — CSS-переходы
+ * веер образцов перекрашивает потолок. Действие сцены — CSS-переходы
  * по transform и opacity на пружинных кривых, доигрывают сами; при прокрутке назад сцена так же возвращается.
  *
  * И на компьютере, и на телефоне одинаково: карточка стоит на месте (sticky), а прокрутка страницы снизу вверх
@@ -69,7 +68,7 @@ const WOBBLE: Keyframe[] = [
 ];
 
 /** Картинка-сцена: при смене сцены кусочек полотна переходит в новое положение, а слои появляются по очереди */
-function Stage({ c, finish, scene, appear, room, art }: { c: CanvasInfo; finish: Finish; scene: Scene; appear: number; room: number; art: boolean }) {
+function Stage({ c, finish, scene, appear, art }: { c: CanvasInfo; finish: Finish; scene: Scene; appear: number; art: boolean }) {
   const [ready, setReady] = useState(false);
   const face = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -101,7 +100,6 @@ function Stage({ c, finish, scene, appear, room, art }: { c: CanvasInfo; finish:
   }, [ready, appear]); // eslint-disable-line react-hooks/exhaustive-deps -- сцену берём на момент появления
 
   const kinds = new Set(c.scenes.map((s) => s.kind));
-  const width = c.scenes.find((s) => s.kind === 'width');
   const fire = c.scenes.find((s) => s.kind === 'fire');
   const active = ready ? scene.kind : undefined;
   const look = active === 'look';
@@ -118,7 +116,6 @@ function Stage({ c, finish, scene, appear, room, art }: { c: CanvasInfo; finish:
         <Swatch finish={finish} mark={kinds.has('marking') ? c.name : undefined} face={face} />
       </div>
 
-      {art && width?.value && <TapeRoll roll={width.value} room={room} active={active === 'width'} />}
       {art && kinds.has('palette') && c.colors && <FanRoom colors={c.colors} finish={finish} active={active === 'palette'} />}
 
       {kinds.has('opacity') && (
@@ -158,7 +155,7 @@ function Stage({ c, finish, scene, appear, room, art }: { c: CanvasInfo; finish:
   );
 }
 
-/** Крупная цифра сцены: «около 0,18 мм», «до 5,5 м», «Bs1d0» */
+/** Крупная цифра сцены: «около 0,18 мм», «Bs1d0» */
 function SceneValue({ scene }: { scene: Scene }) {
   if (scene.badge) return <p className="cs-value">{scene.badge}</p>;
   if (scene.kind === 'thickness' && scene.value)
@@ -168,13 +165,6 @@ function SceneValue({ scene }: { scene: Scene }) {
         {num(scene.value)} мм
       </p>
     );
-  if (scene.kind === 'width' && scene.value)
-    return (
-      <p className="cs-value">
-        <small>до </small>
-        {meters(scene.value)} м
-      </p>
-    );
   return null;
 }
 
@@ -182,7 +172,6 @@ export default function CanvasStory({ items }: { items: CanvasInfo[] }) {
   const [index, setIndex] = useState(0);
   const [step, setStep] = useState(0);
   const [finish, setFinish] = useState<Record<string, Finish>>({});
-  const [room, setRoom] = useState(4);
   const [appear, setAppear] = useState(0);
   const scroller = useRef<HTMLDivElement>(null);
   const visual = useRef<HTMLDivElement>(null);
@@ -201,7 +190,7 @@ export default function CanvasStory({ items }: { items: CanvasInfo[] }) {
 
   useLamp(visual, scene.kind === 'look', c.id);
 
-  // Рисунки следующих сцен (микрометр, рулетка, комната) — сотни SVG-элементов. Чтобы не утяжелять загрузку страницы,
+  // Рисунки следующих сцен (микрометр, комната) — сотни SVG-элементов. Чтобы не утяжелять загрузку страницы,
   // подключаем их, когда браузер освободится, с низким приоритетом (React отдаёт работу кусочками), — или сразу,
   // если человек уже долистал дальше первой сцены.
   const [art, setArt] = useState(false);
@@ -327,7 +316,7 @@ export default function CanvasStory({ items }: { items: CanvasInfo[] }) {
         <div className="container-page cs-wrap">
           <div className="cs-card">
             <div ref={visual} className="cs-visual" onPointerDown={onDown} onPointerUp={onUp} onPointerCancel={() => (drag.current = null)}>
-              <Stage key={c.id} c={c} finish={currentFinish} scene={scene} appear={appear} room={room} art={art} />
+              <Stage key={c.id} c={c} finish={currentFinish} scene={scene} appear={appear} art={art} />
               {/* Микрометр общий для всех полотен: при смене полотна он не пропадает, а перемеряет */}
               {art && thickness?.value && (
                 <Micrometer
@@ -433,7 +422,6 @@ export default function CanvasStory({ items }: { items: CanvasInfo[] }) {
                       </div>
                     )}
 
-                    {s.kind === 'width' && s.value && <RoomSlider room={room} roll={s.value} onChange={setRoom} focusable={i === current} />}
                   </div>
                 ))}
               </div>

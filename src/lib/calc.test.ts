@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { canvases } from '../config/canvases';
-import { needsSeam, parseNum, pricePerM2, rollOf, roundArea } from './calc';
+import { needsSeam, parseNum, pricePerM2, rollOf, roundArea, surchargeOf } from './calc';
 
 const byId = (id: string) => canvases.find((c) => c.id === id);
 
@@ -18,6 +18,13 @@ describe('калькулятор полотна', () => {
     expect(needsSeam(5.5, 5.5)).toBe(false);
     expect(needsSeam(5.6, 5.5)).toBe(true);
     expect(needsSeam(4.6, 4.5)).toBe(true);
+  });
+
+  it('надбавка 50 ₽/м², если одна из сторон от 5 м', () => {
+    expect(surchargeOf(4.9, 4.9)).toBe(0);
+    expect(surchargeOf(5, 3)).toBe(50);
+    expect(surchargeOf(3, 5.2)).toBe(50);
+    expect(surchargeOf(6, 6)).toBe(50);
   });
 
   it('площадь до десятых и запятая в полях', () => {

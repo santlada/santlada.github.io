@@ -7,15 +7,13 @@
  * Виды сцен (kind) — у каждого своя анимация:
  *   look      — кусочек полотна вблизи, по нему скользит блик лампы; переключение фактуры (первая сцена)
  *   thickness — толщину меряет микрометр, рядом два листа бумаги (value — толщина в мм)
- *   width     — рулетка до ширины рулона, рулон раскатывается по комнате; ползунок ширины комнаты
- *               показывает, нужен ли шов (value — ширина рулона в метрах)
  *   palette   — веер образцов цвета; нажатие перекрашивает потолок в маленькой комнате
  *   opacity   — лампа за плёнкой: тонкая просвечивает, эта — нет
  *   marking   — маркировка производителя по краю полотна
  *   fire      — огонь под полотном, класс пожарной безопасности
  *
  * Меняйте цены, тексты и цифры здесь. Откуда взяты факты — src/assets/canvases/SOURCES.md.
- * Все полотна должны иметь одинаковое число сцен — так прокрутка одинаковой длины.
+ * Длина прокрутки — по полотну с самым большим числом сцен; у полотна с меньшим числом последняя сцена просто остаётся на экране.
  */
 export type Finish = 'matte' | 'satin' | 'gloss' | 'plaster';
 
@@ -26,7 +24,7 @@ export const finishNames: Record<Finish, { name: string; hint: string }> = {
   plaster: { name: 'Матовое', hint: 'без бликов, видна мелкая фактура — как штукатурка' },
 };
 
-export type SceneKind = 'look' | 'thickness' | 'width' | 'palette' | 'opacity' | 'marking' | 'fire';
+export type SceneKind = 'look' | 'thickness' | 'palette' | 'opacity' | 'marking' | 'fire';
 
 export interface Scene {
   kind: SceneKind;
@@ -34,7 +32,7 @@ export interface Scene {
   title: string;
   /** Одна-две фразы от первого лица */
   text: string;
-  /** Цифра для анимации: толщина в мм (thickness), ширина рулона в м (width) */
+  /** Цифра для анимации: толщина в мм (thickness) */
   value?: number;
   /** true — цифра примерная, на сайте показывается со словом «около» */
   approx?: boolean;
@@ -56,6 +54,8 @@ export interface CanvasInfo {
   prices?: Partial<Record<Finish, number>>;
   /** Короткая метка: «Популярное», «Премиум» */
   badge?: string;
+  /** Ширина рулона, м — для калькулятора (шов, если комната шире); не указана — берётся самый широкий рулон */
+  roll?: number;
   /** Цвет кусочка полотна в анимации */
   tone: string;
   /** Фактуры, в которых выпускается полотно (первая показывается сразу) */
@@ -74,6 +74,7 @@ export const canvases: CanvasInfo[] = [
     price: 450,
     prices: { matte: 450, satin: 500, gloss: 500 },
     badge: 'Популярное',
+    roll: 5.5,
     tone: '#f6f6f3',
     finishes: ['matte', 'satin', 'gloss'],
     colors: [
@@ -96,12 +97,6 @@ export const canvases: CanvasInfo[] = [
         value: 0.18,
         approx: true,
         text: 'Тонкое, как два листа офисной бумаги, но прочное: натягивается ровно, без морщин и складок.',
-      },
-      {
-        kind: 'width',
-        title: 'Широкий рулон',
-        value: 5.5,
-        text: 'Комнату шириной до 5,5 м закрываю одним полотном — без шва посередине.',
       },
       {
         kind: 'palette',
@@ -151,6 +146,7 @@ export const canvases: CanvasInfo[] = [
     origin: 'Германия · Teqtum GmbH',
     price: 1200,
     badge: 'Премиум',
+    roll: 4.5,
     tone: '#efede8',
     finishes: ['plaster'],
     scenes: [
@@ -165,12 +161,6 @@ export const canvases: CanvasInfo[] = [
         value: 0.2,
         approx: true,
         text: 'Тонкая и прочная плёнка с технологией Power Matte: матовая поверхность без единого блика.',
-      },
-      {
-        kind: 'width',
-        title: 'Рулон до 4,5 м',
-        value: 4.5,
-        text: 'Производитель выпускает её шириной до 4,5 м — большинство комнат закрываю одним куском, без шва.',
       },
       {
         kind: 'fire',
