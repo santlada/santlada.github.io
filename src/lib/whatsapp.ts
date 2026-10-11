@@ -51,13 +51,15 @@ export interface CalcRequest {
   city: string;
 }
 
+const greeting = 'السلام عليكم ورحمة الله وبركاته';
+
 /** Текст «Отправить расчёт мастеру» из калькулятора */
 export function buildCalcMessage(r: CalcRequest): string {
   const room = r.width && r.length ? `~${num(r.width)}×${num(r.length)} м (${num(r.area)} м²)` : `~${num(r.area)} м²`;
   const finish = clean(r.finish ?? '');
   const canvasName = clean(r.canvas) ? `полотно ${clean(r.canvas)}` : 'полотно — посоветуйте';
   const canvas = finish ? `${canvasName}, ${finish.toLowerCase()}` : canvasName;
-  return `Расчёт с сайта: комната ${room}, ${canvas}, ориентир от ${rub(r.total)} ₽ за полотно, город ${clean(r.city)}. Хочу записаться на замер.`;
+  return `${greeting}\nПишу вам с сайта ${site.brand}. Расчёт: комната ${room}, ${canvas}, ориентир от ${rub(r.total)} ₽ за полотно, город ${clean(r.city)}. Хочу записаться на замер.`;
 }
 
 /** Текст «Хочу такой потолок» со ссылкой на работу */
