@@ -1,80 +1,64 @@
 ---
+import { IconWhatsApp } from './icons';
 import { extras, steps } from '../config/site';
+import { waLink } from '../lib/whatsapp';
 
-// Вместо калькулятора: клиент приходит с примером или без, а дизайн и дополнения обсуждает с мастером
-const ways = [
-  {
-    title: 'Есть пример, который нравится',
-    text: 'Пришлите фото потолка — из интернета или с этого сайта. Скажу, как сделать такой же в вашей комнате.',
-  },
-  {
-    title: 'Нет идеи — не страшно',
-    text: 'Дизайн предложу сам: посмотрю комнату и подберу полотно, профиль и свет под её форму.',
-  },
-  {
-    title: 'Дополнения — по месту',
-    text: 'Подсветку, линии, карниз и светильники посоветую на замере — с учётом мебели, окон и проводки.',
-  },
-];
+// Как проходит заказ: шаги от первого сообщения до гарантии и что можно добавить к потолку.
+// Шаги и дополнения — src/config/site.ts (steps, extras).
+const wa = waLink('Здравствуйте! Пишу с сайта по поводу натяжного потолка.');
 ---
 
-<section id="proekt" class="page scroll-mt-20" data-tone="blue" data-reveal aria-labelledby="proekt-title">
+<section id="proekt" class="page scroll-mt-20" data-tone="white" data-reveal aria-labelledby="proekt-title">
   <div class="container-page py-20 lg:py-32">
     <div class="max-w-2xl" data-rise>
-      <h2 id="proekt-title" class="h-section">Считать ничего не нужно — я всё продумаю</h2>
-      <p class="lead mt-3">Выберите полотно или просто напишите — дальше я веду проект сам: от идеи и замера до последнего светильника.</p>
+      <h2 id="proekt-title" class="h-section">Как проходит заказ</h2>
+      <p class="lead mt-3">Пять шагов от первого сообщения до готового потолка.</p>
     </div>
 
-    <ol class="mt-10 grid gap-4 md:grid-cols-3 lg:gap-6">
+    <ol id="kak" class="relative mt-10 grid scroll-mt-24 gap-8 lg:mt-14 lg:grid-cols-5 lg:gap-6">
       {
-        ways.map((way) => (
-          <li class="card-light flex flex-col rounded-[var(--radius-media)] bg-plane p-6 shadow-[var(--shadow-float)] sm:p-8" data-spot data-rise>
-            <h3 class="font-display text-[1.125rem] leading-snug font-normal tracking-[-0.02em] text-brand sm:text-[1.25rem]">{way.title}</h3>
-            <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink-soft">{way.text}</p>
+        steps.map((step, i) => (
+          <li class="relative grid grid-cols-[2.75rem_1fr] content-start gap-4 lg:grid-cols-1 lg:gap-5">
+            <div class="relative flex flex-col items-center lg:flex-row">
+              <span class="relative z-10 grid size-11 shrink-0 place-items-center rounded-full bg-brand font-display text-[0.9375rem] font-semibold text-white">
+                {i + 1}
+              </span>
+              {i < steps.length - 1 && (
+                <span
+                  class="absolute top-11 bottom-[-2rem] left-1/2 w-px -translate-x-1/2 bg-mist lg:top-1/2 lg:right-[-1.5rem] lg:bottom-auto lg:left-11 lg:h-px lg:w-auto lg:translate-x-0"
+                  aria-hidden="true"
+                  data-rise="line"
+                  style={`--i:${i}`}
+                />
+              )}
+            </div>
+            <div>
+              <h3 class="text-[1.0625rem] font-semibold">{step.title}</h3>
+              <p class="mt-1.5 text-[0.9375rem] leading-relaxed text-ink-soft">{step.text}</p>
+            </div>
           </li>
         ))
       }
     </ol>
 
-    <div class="mt-10" data-rise>
-      <h3 class="text-[1.125rem] font-semibold">Что можно добавить к потолку</h3>
-      <ul class="mt-4 flex flex-wrap gap-2">
+    <div class="mt-14 grid gap-4 border-t border-line pt-10 lg:mt-16 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-10">
+      <div>
+        <h3 class="text-[1.125rem] font-semibold">Что можно добавить к потолку</h3>
+        <p class="mt-2 text-[0.9375rem] leading-relaxed text-ink-soft">
+          Посоветую на замере — с учётом мебели, окон и проводки. Цена дополнений зависит от проекта.
+        </p>
+      </div>
+      <ul class="flex flex-wrap content-start gap-2">
         {extras.map((x) => <li class="inline-flex min-h-10 items-center rounded-full px-4 text-[0.9375rem] ring-1 ring-mist ring-inset">{x}</li>)}
       </ul>
     </div>
 
-    <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2" data-rise>
-      <a href="#ceny" class="btn-primary btn-shine" data-magnet>Заказать полотно</a>
-      <a href="#kontakty" class="btn-link">Записаться на замер</a>
-    </div>
-
-    <div id="kak" class="mt-16 scroll-mt-24 border-t border-line pt-12 lg:mt-20">
-      <h3 class="font-display text-[1.375rem] font-light tracking-[-0.03em] sm:text-[1.75rem]" data-rise>Как проходит заказ</h3>
-      <ol class="relative mt-8 grid gap-8 lg:grid-cols-5 lg:gap-6">
-        {
-          steps.map((step, i) => (
-            <li class="relative grid grid-cols-[2.75rem_1fr] content-start gap-4 lg:grid-cols-1 lg:gap-5" data-rise>
-              <div class="relative flex flex-col items-center lg:flex-row">
-                <span class="relative z-10 grid size-11 shrink-0 place-items-center rounded-full bg-plane font-display text-[0.9375rem] font-semibold text-brand-deep ring-1 ring-mist">
-                  {i + 1}
-                </span>
-                {i < steps.length - 1 && (
-                  <span
-                    class="absolute top-11 bottom-[-2rem] left-1/2 w-px -translate-x-1/2 bg-mist lg:top-1/2 lg:right-[-1.5rem] lg:bottom-auto lg:left-11 lg:h-px lg:w-auto lg:translate-x-0"
-                    aria-hidden="true"
-                    data-rise="line"
-                    style={`--i:${i}`}
-                  />
-                )}
-              </div>
-              <div>
-                <h4 class="text-[1.0625rem] font-semibold">{step.title}</h4>
-                <p class="mt-1.5 text-[0.9375rem] leading-relaxed text-ink-soft">{step.text}</p>
-              </div>
-            </li>
-          ))
-        }
-      </ol>
+    <div class="mt-10 flex flex-wrap items-center gap-3">
+      <a href="#kontakty" class="btn-primary">Записаться на замер</a>
+      <a href={wa} target="_blank" rel="noopener" class="btn-ghost">
+        <IconWhatsApp size={18} class="text-wa" />
+        Написать в WhatsApp
+      </a>
     </div>
   </div>
 </section>

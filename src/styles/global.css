@@ -349,6 +349,11 @@
   transform-origin: 0 70%;
 }
 
+/* Слово рисуется из data-w: так оно не попадает в текст заголовка (там один чистый текст для поиска и диктора) */
+.hero-word::before {
+  content: attr(data-w);
+}
+
 .hero-lead {
   max-width: 36rem;
   margin-top: 1.25rem;
@@ -489,14 +494,15 @@
 }
 
 /*
- * «Натяжение»: слово появляется сжатым и с плотными буквами, затем расправляется до своей ширины.
- * Конечного кадра нет — анимация приходит к собственным значениям элемента (трекинг у заголовков разный).
+ * «Натяжение»: слово появляется сжатым, затем расправляется до своей ширины.
+ * Конечного кадра нет — анимация приходит к собственным значениям элемента.
+ * Расстояние между буквами не анимируем: от него меняется длина строки, заголовок перестраивается
+ * на другое число строк и всё под ним подпрыгивает (сдвиг макета). scaleX место на странице не меняет.
  */
 @keyframes stretch-in {
   from {
     opacity: 0;
     transform: scaleX(0.4);
-    letter-spacing: -0.16em;
     filter: blur(10px);
   }
 
@@ -737,7 +743,8 @@ html[data-scrolling] .hero-photo {
 /*
  * Появление при прокрутке (срабатывает один раз, когда блок показался на экране):
  * синяя панель «натягивается» от середины к краям, как полотно при монтаже; заголовок блока расправляется
- * по ширине (то же «натяжение», что у первого экрана); остальное выплывает по очереди (data-rise).
+ * по ширине (то же «натяжение», что у первого экрана). Остальное содержимое просто стоит на месте —
+ * выплывание по очереди (data-rise) осталось только в блоке полотен #ceny, он не меняется.
  * Без скрипта и при «уменьшить движение» всё сразу на месте.
  */
 @media (prefers-reduced-motion: no-preference) {
@@ -750,20 +757,25 @@ html[data-scrolling] .hero-photo {
     animation: panel-stretch 1.25s cubic-bezier(0.65, 0, 0.2, 1);
   }
 
-  .js .page [data-rise] {
+  .js #ceny [data-rise] {
     opacity: 0;
     transform: translate3d(0, 1.75rem, 0);
   }
 
-  .js .page [data-rise='left'] {
+  .js #ceny [data-rise='left'] {
     transform: translate3d(-2.75rem, 0, 0);
   }
 
-  .js .page [data-rise='right'] {
+  .js #ceny [data-rise='right'] {
     transform: translate3d(2.75rem, 0, 0);
   }
 
-  .js .page [data-rise='zoom'] {
+  /* Заголовок ждёт своей анимации «натяжения» невидимым — иначе он мелькнёт и пропадёт */
+  .js .page [data-rise]:not([data-in]) .h-section {
+    opacity: 0;
+  }
+
+  .js #ceny [data-rise='zoom'] {
     transform: translate3d(0, 1rem, 0) scale(0.95);
   }
 
@@ -785,7 +797,7 @@ html[data-scrolling] .hero-photo {
     --rise-at: 0.5s;
   }
 
-  .js .page[data-reveal='in'] [data-rise][data-in] {
+  .js #ceny[data-reveal='in'] [data-rise][data-in] {
     opacity: 1;
     transform: none;
     transition:
@@ -2883,15 +2895,7 @@ html:has(.order-dialog[open]) {
   min-width: 0;
 }
 
-.works-type-num {
-  font-size: 0.8125rem;
-  letter-spacing: 0.12em;
-  font-variant-numeric: tabular-nums;
-  color: var(--color-ink-soft);
-}
-
 .works-type-title {
-  margin-top: 0.5rem;
   font-family: var(--font-display);
   font-size: clamp(1.625rem, 6.4vw, 2.5rem);
   font-weight: 400;
@@ -3512,4 +3516,192 @@ html:has(.order-dialog[open]) {
   margin-left: -0.55rem;
   border-radius: 1px;
   background: var(--color-gold);
+}
+
+/*
+ * Калькулятор полотна (Calculator.tsx) — продолжение «Трёх полотен»: та же карточка (скругление, тень),
+ * тот же серый свет на картинке и те же пропорции колонок, поэтому оба блока читаются одним целым.
+ * Слева — план комнаты сверху в масштабе, справа — поля и цена.
+ */
+.calc-card {
+  display: grid;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--radius-media);
+  background: var(--color-plane);
+  box-shadow: var(--shadow-float);
+}
+
+@media (min-width: 48rem) {
+  .calc-card {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+}
+
+.calc-visual {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.75rem 1rem 1rem;
+  background: radial-gradient(115% 90% at 50% 38%, #ffffff 0%, #eeeef1 55%, #dcdce2 100%);
+}
+
+.calc-plan {
+  display: block;
+  width: 100%;
+  max-width: 34rem;
+  height: auto;
+  margin-inline: auto;
+}
+
+/* Стены — толстая тёмная обводка, внутри полотно выбранного цвета */
+.calc-room {
+  stroke: var(--color-ink);
+  stroke-width: 5;
+  stroke-linejoin: round;
+}
+
+.calc-plan-dim {
+  font: 500 13px var(--font-sans);
+  fill: var(--color-ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-plan-area {
+  font: 400 19px var(--font-display);
+  letter-spacing: -0.03em;
+  fill: var(--color-ink);
+}
+
+.calc-seam line {
+  stroke: var(--color-brand);
+  stroke-width: 2;
+  stroke-dasharray: 6 5;
+}
+
+.calc-seam-label {
+  font: 600 12px var(--font-sans);
+  fill: var(--color-brand);
+}
+
+/* Место под пояснение занято всегда — когда появляется шов, карточка не меняет высоту */
+.calc-note {
+  min-height: 2.9em;
+  max-width: 26rem;
+  margin-inline: auto;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  text-align: center;
+  color: var(--color-ink-soft);
+}
+
+.calc-info {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1rem 1rem 1.25rem;
+}
+
+@media (min-width: 48rem) {
+  .calc-info {
+    gap: 1.125rem;
+    padding: 1.75rem 2rem;
+  }
+}
+
+.calc-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+/* Варианты — настоящие радиокнопки внутри «пилюль»: стрелки переключают, Tab заходит в группу один раз */
+.calc-opt {
+  min-height: 2.5rem;
+  padding-inline: 0.9375rem;
+
+  &:has(:checked) {
+    background: var(--color-brand);
+    color: #fff;
+    --tw-ring-color: var(--color-brand);
+  }
+
+  &:has(:focus-visible) {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 3px;
+  }
+}
+
+.calc-sides {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.5rem;
+}
+
+.calc-times {
+  padding-top: 2.6rem;
+  color: var(--color-ink-soft);
+}
+
+.calc-unit {
+  position: absolute;
+  top: 50%;
+  right: 0.875rem;
+  transform: translateY(-50%);
+  color: var(--color-ink-soft);
+  pointer-events: none;
+}
+
+.calc-result {
+  display: grid;
+  gap: 0.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-line);
+}
+
+.calc-total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.625rem;
+  font-size: 0.9375rem;
+  color: var(--color-ink-soft);
+
+  & b {
+    font: 400 clamp(1.625rem, 6vw, 2.125rem) / 1.05 var(--font-display);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+    color: var(--color-brand);
+  }
+}
+
+/* Площадь × цена — тем же шрифтом, что и сумма: знак ₽ в нём уже загружен, отдельный файл шрифта не нужен */
+.calc-formula {
+  font: 400 0.8125rem / 1.5 var(--font-display);
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-soft);
+}
+
+.calc-how {
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--color-ink-soft);
+}
+
+/* Комната на плане плавно меняет размер — только для тех, кто не просил уменьшить движение */
+@media (prefers-reduced-motion: no-preference) {
+  .calc-room,
+  .calc-room-light {
+    transition:
+      x 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      y 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      fill 0.3s ease;
+  }
 }

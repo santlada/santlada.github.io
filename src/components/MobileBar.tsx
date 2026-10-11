@@ -5,7 +5,7 @@ import { waLink } from '../lib/whatsapp';
 import { IconArrowUp, IconClose, IconMenu, IconPhone, IconWhatsApp } from './icons';
 
 /**
- * Нижняя панель на телефоне (звонок, меню, заказ), кнопка «наверх» и круглая кнопка WhatsApp на компьютере.
+ * Нижняя панель на телефоне (меню, WhatsApp, запись на замер), кнопка «наверх» и круглая кнопка WhatsApp на компьютере.
  * Пока на экране блок «Полотна и цены», главная кнопка заказывает показанное полотно
  * (в карточке полотна на телефоне своей кнопки нет — там всё место отдано картинке).
  */
@@ -57,7 +57,7 @@ export default function MobileBar() {
           <button type="button" className="absolute inset-0 bg-ink/50" onClick={() => setMenu(false)} aria-label="Закрыть меню" tabIndex={-1} />
           <div className="mobile-sheet absolute inset-x-0 bottom-0 rounded-t-[1.5rem] bg-plane px-4 pt-3 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[var(--shadow-float)]">
             <div className="mb-1 flex items-center justify-between px-2">
-              <p className="text-[0.8125rem] font-medium tracking-wide text-ink-soft uppercase">Меню</p>
+              <p className="text-[0.9375rem] font-medium text-ink-soft">Меню</p>
               <button type="button" className="grid size-11 place-items-center rounded-full hover:bg-haze" onClick={() => setMenu(false)} aria-label="Закрыть меню" autoFocus>
                 <IconClose size={22} />
               </button>
@@ -71,14 +71,14 @@ export default function MobileBar() {
                 </li>
               ))}
             </ul>
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <a href={`tel:+${site.phoneDigits}`} className="btn-ghost min-h-12">
-                <IconPhone size={18} />
-                Позвонить
-              </a>
+            <div className="mt-3 grid gap-2">
               <a href={wa} target="_blank" rel="noopener" className="btn-wa min-h-12">
                 <IconWhatsApp size={18} />
-                WhatsApp
+                Написать в WhatsApp
+              </a>
+              <a href={`tel:+${site.phoneDigits}`} className="btn-ghost min-h-12">
+                <IconPhone size={18} />
+                Позвонить: {site.phone}
               </a>
             </div>
           </div>
@@ -102,19 +102,19 @@ export default function MobileBar() {
         className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-plane px-3 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] lg:hidden"
       >
         <div className="grid grid-cols-[auto_auto_1fr] gap-2">
-          <a href={`tel:+${site.phoneDigits}`} className="btn-ghost min-h-12 px-3.5" aria-label={`Позвонить: ${site.phone}`}>
-            <IconPhone size={20} />
-          </a>
           <button type="button" className="btn-ghost min-h-12 px-3.5" onClick={() => setMenu(true)} aria-label="Открыть меню" aria-haspopup="dialog">
             <IconMenu size={22} />
           </button>
+          <a href={wa} target="_blank" rel="noopener" className="btn-ghost min-h-12 px-3.5" aria-label="Написать в WhatsApp">
+            <IconWhatsApp size={22} className="text-wa" />
+          </a>
           {canvas ? (
             <button type="button" className="btn-primary btn-shine min-h-12" onClick={() => openOrder(canvas)}>
               Заказать {canvas}
             </button>
           ) : (
-            <a href={`${import.meta.env.BASE_URL}#ceny`} className="btn-primary btn-shine min-h-12">
-              Заказать полотно
+            <a href={`${base}#kontakty`} className="btn-primary btn-shine min-h-12">
+              Записаться на замер
             </a>
           )}
         </div>

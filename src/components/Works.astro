@@ -7,15 +7,15 @@ import { getRenders, getWorks } from '../lib/works';
 import { plural } from '../lib/plural';
 
 // Работы по разделам: для каждого вида — визуализации (комната, разрез, вблизи), плюсы и фото с объектов этого вида.
-// Работа с дополнительным видом (also в data/works.ts) показывается и в его разделе.
+// Каждая работа показывается один раз — в разделе своей папки (основного вида). Дополнительные виды (also
+// в data/works.ts) только подписываются в просмотре фото.
 const works = await getWorks();
 const sections = (await Promise.all(ceilingOrder
   .map(async (type) => ({
     type,
     info: ceilingTypes[type],
     renders: await getRenders(type),
-    // Сначала работы этого вида, затем те, где он дополнительный (иначе разделы начинаются с одного и того же фото)
-    list: works.filter((w) => w.types[0] === type).concat(works.filter((w) => w.types[0] !== type && w.types.includes(type))),
+    list: works.filter((w) => w.types[0] === type),
   }))))
   .filter((s) => s.list.length > 0);
 ---
@@ -25,12 +25,12 @@ const sections = (await Promise.all(ceilingOrder
     <div class="max-w-2xl" data-rise>
       <h2 id="raboty-title" class="h-section">Мои работы</h2>
       <p class="lead mt-3">
-        Четыре вида потолков, которые я делаю. У каждого — как он выглядит в комнате и в разрезе, и фото с моих
-        объектов. Понравился потолок — нажмите на фото и «Хочу такой потолок», ссылка придёт мне в WhatsApp.
+        Четыре вида потолков, которые я делаю. У каждого — как он выглядит в комнате и в разрезе, и фото с моих
+        объектов. Понравился потолок — нажмите на фото и «Хочу такой потолок», ссылка придёт мне в WhatsApp.
       </p>
     </div>
 
-    <nav class="works-jump" aria-label="Виды потолков" data-rise>
+    <nav class="works-jump" aria-label="Виды потолков">
       {
         sections.map((s) => (
           <a href={`#vid-${s.type}`} class="chip whitespace-nowrap">
@@ -42,13 +42,10 @@ const sections = (await Promise.all(ceilingOrder
 
     <div class="works-sections">
       {
-        sections.map((s, i) => (
+        sections.map((s) => (
           <article id={`vid-${s.type}`} class="works-type scroll-mt-24" aria-labelledby={`vid-${s.type}-title`}>
             <div class="works-type-head">
-              <div class="works-type-intro" data-rise="left">
-                <p class="works-type-num">
-                  {String(i + 1).padStart(2, '0')} / {String(sections.length).padStart(2, '0')}
-                </p>
+              <div class="works-type-intro">
                 <h3 id={`vid-${s.type}-title`} class="works-type-title">
                   {s.info.name}
                 </h3>
@@ -56,7 +53,7 @@ const sections = (await Promise.all(ceilingOrder
               <div class="works-type-visual">
                 <Renders client:visible {...s.renders} section={s.info.section} />
               </div>
-              <div class="works-type-text" data-rise="left">
+              <div class="works-type-text">
                 <p class="text-[1.0625rem] leading-relaxed text-ink-soft">{s.info.description}</p>
                 <ul class="works-pros">
                   {s.info.pros.map((p) => (
@@ -69,10 +66,10 @@ const sections = (await Promise.all(ceilingOrder
               </div>
             </div>
 
-            <div class="mt-6" data-rise>
+            <div class="mt-6">
               <p class="mb-3 text-[0.9375rem] font-semibold">
-                Мои объекты — {s.list.length} {plural(s.list.length, ['работа', 'работы', 'работ'])}
-                <span class="font-normal text-ink-soft lg:hidden"> · листайте вбок</span>
+                {s.list.length} {plural(s.list.length, ['работа', 'работы', 'работ'])} с моих объектов.
+                <span class="font-normal text-ink-soft lg:hidden">Листайте пальцем вбок.</span>
               </p>
               <WorksGallery client:load works={s.list} filters={false} layout="strip" syncUrl owns={s.type} />
             </div>
@@ -81,7 +78,7 @@ const sections = (await Promise.all(ceilingOrder
       }
     </div>
 
-    <p class="mt-10 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.9375rem] text-ink-soft" data-rise>
+    <p class="mt-10 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.9375rem] text-ink-soft">
       <IconTelegram size={18} class="text-brand" />
       Новые объекты выкладываю в Telegram-канал
       <a href={site.telegram} target="_blank" rel="noopener" class="font-semibold underline decoration-current/40 underline-offset-4 hover:decoration-current">

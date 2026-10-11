@@ -1,10 +1,9 @@
 import { useId, useRef, useState } from 'react';
 import { canvases } from '../config/canvases';
-import { measureTimes, site } from '../config/site';
+import { measureTimes } from '../config/site';
 import { buildMeasureMessage, emptyContact, waLink, type Contact } from '../lib/whatsapp';
+import CityField from './CityField';
 import { IconWhatsApp } from './icons';
-
-const OTHER = '__other';
 
 interface Props {
   /** Полотно, выбранное в каталоге */
@@ -17,69 +16,27 @@ interface Props {
 export default function QuickMeasure({ canvas = '', locked = false }: Props) {
   const uid = useId();
   const [contact, setContact] = useState<Contact>({ ...emptyContact, canvas });
-  const [otherCity, setOtherCity] = useState(false);
   const [error, setError] = useState('');
   const [sent, setSent] = useState(false);
   const selectRef = useRef<HTMLSelectElement>(null);
 
   const set = (patch: Partial<Contact>) => setContact((c) => ({ ...c, ...patch }));
-  const listed = site.cities.includes(contact.city);
-  const cityValue = listed ? contact.city : otherCity || contact.city ? OTHER : '';
-  const ordering = Boolean(contact.canvas);
+  // Окно заказа из блока полотен отправляет заказ, форма в контактах — запись на замер
+  const ordering = locked && Boolean(contact.canvas);
 
   return (
     <form className="grid gap-4" onSubmit={(e) => e.preventDefault()} noValidate aria-label={ordering ? 'Заказ полотна' : 'Запись на бесплатный замер'}>
       <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label htmlFor={`${uid}-city`} className="label">
-            Город или район
-          </label>
-          <select
-            id={`${uid}-city`}
-            ref={selectRef}
-            className="field select-field"
-            value={cityValue}
-            aria-invalid={Boolean(error) || undefined}
-            aria-describedby={error ? `${uid}-city-error` : undefined}
-            onChange={(e) => {
-              setError('');
-              if (e.target.value === OTHER) {
-                setOtherCity(true);
-                set({ city: '' });
-              } else {
-                setOtherCity(false);
-                set({ city: e.target.value });
-              }
-            }}
-          >
-            <option value="" disabled>
-              Выберите из списка
-            </option>
-            {site.cities.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-            <option value={OTHER}>Другой город или село</option>
-          </select>
-          {cityValue === OTHER && (
-            <input
-              className="field mt-2"
-              placeholder="Название города или села"
-              aria-label="Название города или села"
-              value={listed ? '' : contact.city}
-              onChange={(e) => {
-                setError('');
-                set({ city: e.target.value });
-              }}
-            />
-          )}
-          {error && (
-            <p id={`${uid}-city-error`} className="mt-1.5 text-[0.875rem] font-medium text-danger">
-              {error}
-            </p>
-          )}
-        </div>
+        <CityField
+          id={`${uid}-city`}
+          value={contact.city}
+          error={error}
+          selectRef={selectRef}
+          onChange={(city) => {
+            setError('');
+            set({ city });
+          }}
+        />
         <div>
           <label htmlFor={`${uid}-name`} className="label">
             Как к вам обращаться
@@ -155,7 +112,7 @@ export default function QuickMeasure({ canvas = '', locked = false }: Props) {
       </a>
       {sent && (
         <p className="text-[0.9375rem] text-ink-soft" role="status">
-          Открыли WhatsApp с текстом заказа. Нажмите «Отправить» в чате — заявка придёт мне, и, если есть фото потолка, который понравился, приложите его. Я отвечу и договорюсь с вами о времени.
+          Открыли WhatsApp с текстом {ordering ? 'заказа' : 'заявки'}. Нажмите «Отправить» в чате — заявка придёт мне, и, если есть фото потолка, который понравился, приложите его. Я отвечу и договорюсь с вами о времени.
         </p>
       )}
     </form>

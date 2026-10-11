@@ -1,44 +1,54 @@
 ---
-import { IconTelegram } from './icons';
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { IconWhatsApp } from './icons';
 import { site } from '../config/site';
-import { plural } from '../lib/plural';
+import { waLink } from '../lib/whatsapp';
 
-const years = `${site.guaranteeYears} ${plural(site.guaranteeYears, ['год', 'года', 'лет'])}`;
+// Фото мастера: положите снимок в src/assets/master/ (jpg, png или webp, вертикальный, от 1000 px по высоте) —
+// он сам появится справа от текста. Пока папка пустая, блок показывает только текст.
+const photos = import.meta.glob<{ default: ImageMetadata }>('/src/assets/master/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}', { eager: true });
+const photo = Object.values(photos)[0]?.default;
+const wa = waLink('Здравствуйте! Пишу с сайта по поводу натяжного потолка.');
 ---
 
-<section id="master" class="page scroll-mt-20" data-tone="white" data-reveal aria-labelledby="master-title">
-  <div class="container-page grid py-20 lg:py-32 grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">
-    <div data-rise="left">
-      <h2 id="master-title" class="h-section">Меня зовут {site.master}</h2>
+<section id="master" class="page scroll-mt-20" data-tone="blue" data-reveal aria-labelledby="master-title">
+  <div
+    class:list={[
+      'container-page grid grid-cols-[minmax(0,1fr)] gap-10 py-20 lg:py-32',
+      photo && 'lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-center lg:gap-16',
+    ]}
+  >
+    <div data-rise>
+      <h2 id="master-title" class="h-section">Кто будет делать ваш потолок</h2>
       <div class="mt-5 grid max-w-xl gap-4 text-[1.0625rem] leading-relaxed">
         <p>
-          Я занимаюсь натяжными потолками {site.experience}. Замеряю, помогаю выбрать полотно и свет, монтирую
-          профиль, подсветку и светильники — всё делаю сам.
+          Я — {site.master}, занимаюсь натяжными потолками {site.experience}. От замера до последнего светильника всё
+          делаю сам, поэтому и за результат отвечаю сам.
         </p>
         <p class="text-ink-soft">
-          Раньше выезжал на работы по России и делал потолки в больших городах. Сейчас работаю во всех городах и
-          сёлах Дагестана — база {site.baseCityIn}, замер бесплатный, куда бы ни ехать. Готовые работы выкладываю
-          в Telegram-канал — там видно, как потолки выглядят вживую.
+          Раньше выезжал на работы по России и делал потолки в больших городах. Сейчас работаю во всех городах и сёлах
+          Дагестана, база — {site.baseCityIn}. На замер приезжаю бесплатно, куда бы ни ехать.
         </p>
       </div>
-    </div>
-
-    <div data-rise="right">
-      <dl class="grid max-w-xl grid-cols-2 gap-4">
-        <div class="rounded-[var(--radius-media)] bg-brand p-5 text-white sm:p-6" data-spot>
-          <dt class="text-[0.875rem] text-white/75">Опыт</dt>
-          <dd class="mt-3 font-display text-[1.375rem] leading-[1.1] font-light tracking-[-0.04em] sm:text-[1.875rem]">{site.experience}</dd>
-        </div>
-        <div class="rounded-[var(--radius-media)] bg-brand p-5 text-white sm:p-6" data-spot>
-          <dt class="text-[0.875rem] text-white/75">Гарантия на монтаж</dt>
-          <dd class="mt-3 font-display text-[1.375rem] leading-[1.1] font-light tracking-[-0.04em] sm:text-[1.875rem]">{years}</dd>
-        </div>
-      </dl>
-
-      <a href={site.telegram} target="_blank" rel="noopener" class="btn-ghost mt-6">
-        <IconTelegram size={18} class="text-brand" />
-        Открыть Telegram-канал
+      <a href={wa} target="_blank" rel="noopener" class="btn-primary mt-8">
+        <IconWhatsApp size={18} />
+        Написать в WhatsApp
       </a>
     </div>
+
+    {
+      photo && (
+        <Image
+          src={photo}
+          alt={`${site.master} — мастер по натяжным потолкам`}
+          widths={[420, 640, 900]}
+          sizes="(min-width: 1024px) 440px, 100vw"
+          format="webp"
+          quality={80}
+          class="aspect-[4/5] w-full max-w-md rounded-[var(--radius-card)] object-cover lg:justify-self-end"
+        />
+      )
+    }
   </div>
 </section>

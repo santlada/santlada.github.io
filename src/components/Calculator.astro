@@ -1,0 +1,19 @@
+---
+import Calculator from './Calculator';
+
+// Продолжение «Трёх полотен»: тот же белый тон и та же карточка, поэтому сверху без отступа —
+// нижний отступ блока полотен уже отделяет их. Скрипт грузится заранее (за 600 px до экрана) — чтобы на медленном
+// телефоне калькулятор уже работал, когда человек начнёт вводить размеры. Цены — src/config/canvases.ts, расчёт — src/lib/calc.ts.
+---
+
+<section id="raschet" class="page scroll-mt-20" data-tone="white" data-reveal aria-labelledby="raschet-title">
+  <div class="container-page pb-20 lg:pb-32">
+    <div class="max-w-2xl" data-rise>
+      <h2 id="raschet-title" class="h-section">Посчитайте полотно для своей комнаты</h2>
+      <p class="lead mt-3">Введите размеры — сразу увидите, сколько стоит полотно. Расчёт можно отправить мне в WhatsApp.</p>
+    </div>
+    <div class="mt-8 lg:mt-10">
+      <Calculator client:visible={{ rootMargin: '600px' }} />
+    </div>
+  </div>
+</section>

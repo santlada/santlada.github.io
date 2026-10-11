@@ -50,9 +50,16 @@ const wa = waLink('Здравствуйте! Пишу с сайта по пов�
         <IconPhone size={18} />
         {site.phone}
       </a>
-      <a href={wa} target="_blank" rel="noopener" class="btn-wa hidden min-h-10 px-4 md:inline-flex lg:hidden xl:inline-flex">
+      <!-- Рядом с меню на компьютере места мало: до 2xl — только значок (название то же, его читает диктор) -->
+      <a
+        href={wa}
+        target="_blank"
+        rel="noopener"
+        class="btn-wa hidden min-h-10 px-4 whitespace-nowrap md:inline-flex lg:hidden xl:inline-flex xl:px-3 2xl:px-4"
+        aria-label="Написать в WhatsApp"
+      >
         <IconWhatsApp size={18} />
-        WhatsApp
+        <span class="xl:sr-only 2xl:not-sr-only">Написать в WhatsApp</span>
       </a>
       <button
         type="button"
@@ -85,7 +92,7 @@ const wa = waLink('Здравствуйте! Пишу с сайта по пов�
         </a>
         <a href={wa} target="_blank" rel="noopener" class="btn-wa flex-1">
           <IconWhatsApp size={18} />
-          WhatsApp
+          Написать в WhatsApp
         </a>
       </li>
     </ul>

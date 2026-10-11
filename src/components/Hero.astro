@@ -5,6 +5,8 @@ import ceilingMobile from '../assets/hero/ceiling-mobile.jpg';
 import { site } from '../config/site';
 import { canvases } from '../config/canvases';
 import { plural } from '../lib/plural';
+import { waLink } from '../lib/whatsapp';
+import { IconWhatsApp } from './icons';
 
 // Первый экран: настоящий снимок потолка Исы без тонировки и оффер — что, где и почему у мастера.
 // Фото два: на компьютере — горизонтальное src/assets/hero/ceiling.jpg (от 1600 px по ширине),
@@ -14,14 +16,16 @@ const lines = ['Натяжные потолки,', 'на которые', 'хо�
 const minPrice = Math.min(...canvases.map((c) => c.price));
 
 const facts = [
-  { title: `от ${minPrice} ₽`, note: 'за м² полотна — цены открыто' },
+  { title: `от ${minPrice} ₽`, note: 'за м² полотна' },
   { title: 'Замер бесплатно', note: 'приеду и посчитаю на месте' },
-  { title: `Гарантия ${site.guaranteeYears} ${plural(site.guaranteeYears, ['год', 'года', 'лет'])}`, note: 'на выполненную работу' },
+  { title: `Гарантия ${site.guaranteeYears} ${plural(site.guaranteeYears, ['год', 'года', 'лет'])}`, note: 'на монтаж' },
   { title: '5+ лет опыта', note: 'работал в городах России' },
 ];
 
 const mobile = await getImage({ src: ceilingMobile, widths: [480, 720, 1080], format: 'webp', quality: 80 });
 const desktop = await getImage({ src: ceiling, widths: [1024, 1600], format: 'webp', quality: 86 });
+
+const wa = waLink('Здравствуйте! Пишу с сайта по поводу натяжного потолка.');
 
 let word = 0;
 ---
@@ -36,7 +40,7 @@ let word = 0;
         sizes="100vw"
         width={ceilingMobile.width}
         height={ceilingMobile.height}
-        alt="Натяжной потолок со световыми контурами вокруг люстры — работа Исы"
+        alt="Натяжной потолок со световыми контурами вокруг люстры — работа Исы"
         loading="eager"
         fetchpriority="high"
         decoding="async"
@@ -47,28 +51,35 @@ let word = 0;
   <div class="hero-shade" aria-hidden="true"></div>
 
   <div class="container-page hero-body">
+    <!--
+      У заголовка один текст — его читают поиск и экранный диктор. Анимированные слова нарисованы через CSS
+      (::before с data-w), поэтому в текст страницы не попадают; блок с ними ещё и скрыт от диктора.
+    -->
     <h1 id="hero-title" class="hero-title">
-      <span class="sr-only">Santlada — натяжные потолки {site.baseCityIn} и по Дагестану. </span>
-      {
-        lines.map((line) => (
-          <span class="hero-line" aria-hidden="true">
-            {line.split(' ').map((w) => (
-              <span class="hero-word" style={`--w:${word++}`}>{w}</span>
-            ))}
-          </span>
-        ))
-      }
       <span class="sr-only">{lines.join(' ')}</span>
+      <span aria-hidden="true">
+        {
+          lines.map((line) => (
+            <span class="hero-line">
+              {line.split(' ').map((w) => (
+                <span class="hero-word" data-w={w} style={`--w:${word++}`} />
+              ))}
+            </span>
+          ))
+        }
+      </span>
     </h1>
 
     <p class="hero-lead hero-in" style="--d:0">
-      Матовые, парящие, теневые и со световыми линиями. Сам замеряю, проектирую и монтирую — {site.baseCityIn} и по всему
-      Дагестану.
+      Я {site.masterFirstName}. Сам замеряю, проектирую и монтирую потолки {site.baseCityIn} и по всему Дагестану.
     </p>
 
     <div class="hero-actions hero-in" style="--d:1">
-      <a href="#kontakty" class="btn-primary btn-shine hero-cta" data-magnet>Бесплатный замер</a>
-      <a href="#raboty" class="btn-ghost hero-more">Смотреть работы</a>
+      <a href="#kontakty" class="btn-primary btn-shine hero-cta" data-magnet>Записаться на замер</a>
+      <a href={wa} target="_blank" rel="noopener" class="btn-ghost hero-more">
+        <IconWhatsApp size={18} />
+        Написать в WhatsApp
+      </a>
     </div>
 
     <ul class="hero-facts hero-in" style="--d:2">

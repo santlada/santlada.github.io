@@ -10,7 +10,7 @@ import { waLink } from '../lib/whatsapp';
     <div data-rise="left">
       <h2 id="kontakty-title" class="h-section">Запишитесь на бесплатный замер</h2>
       <p class="lead mt-3">
-        Оставьте заявку — она придёт мне в WhatsApp. Я отвечу, договоримся о времени, приеду и всё рассчитаю на месте: точную стоимость вы узнаете до начала работ.
+        Заявка придёт мне в WhatsApp. Я отвечу, и договоримся, в какой день приехать.
       </p>
       <ul class="mt-8 grid gap-3">
         <li>
@@ -26,8 +26,8 @@ import { waLink } from '../lib/whatsapp';
           <a href={waLink()} target="_blank" rel="noopener" class="group inline-flex items-center gap-3">
             <span class="grid size-11 place-items-center rounded-full bg-plane text-wa ring-1 ring-mist"><IconWhatsApp size={20} /></span>
             <span>
-              <span class="block text-[0.875rem] text-ink-soft">Написать</span>
-              <span class="font-semibold group-hover:underline">WhatsApp</span>
+              <span class="block text-[0.875rem] text-ink-soft">Есть вопрос</span>
+              <span class="font-semibold group-hover:underline">Написать в WhatsApp</span>
             </span>
           </a>
         </li>
@@ -35,16 +35,16 @@ import { waLink } from '../lib/whatsapp';
           <a href={site.telegram} target="_blank" rel="noopener" class="group inline-flex items-center gap-3">
             <span class="grid size-11 place-items-center rounded-full bg-plane text-brand ring-1 ring-mist"><IconTelegram size={20} /></span>
             <span>
-              <span class="block text-[0.875rem] text-ink-soft">Смотреть работы</span>
+              <span class="block text-[0.875rem] text-ink-soft">Новые работы</span>
               <span class="font-semibold group-hover:underline">Telegram-канал</span>
             </span>
           </a>
         </li>
       </ul>
-      <p class="mt-6 text-[0.9375rem] text-ink-soft">{site.workDays}. Цены на сайте настоящие.</p>
+      <p class="mt-6 text-[0.9375rem] text-ink-soft">{site.workDays}.</p>
     </div>
 
-    <div class="card-light rounded-[var(--radius-media)] bg-plane p-5 shadow-[var(--shadow-float)] sm:p-7" data-spot data-rise="right">
+    <div class="rounded-[var(--radius-media)] bg-haze p-5 sm:p-7">
       <QuickMeasure client:load />
     </div>
   </div>

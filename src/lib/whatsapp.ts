@@ -1,5 +1,6 @@
 import { canvases, priceLabel } from '../config/canvases';
 import { site } from '../config/site';
+import { num, rub } from './calc';
 
 export interface Contact {
   name: string;
@@ -33,6 +34,26 @@ export function buildMeasureMessage(contact: Contact): string {
   const blocks = [lines];
   if (clean(contact.comment)) blocks.push([`Что нужно: ${clean(contact.comment)}`]);
   return blocks.map((b) => b.join('\n')).join('\n\n');
+}
+
+export interface CalcRequest {
+  /** Размеры комнаты, м; без них — посчитано по площади */
+  width?: number;
+  length?: number;
+  /** Площадь, м² (уже округлённая) */
+  area: number;
+  /** Название полотна или пусто — «посоветуйте» */
+  canvas: string;
+  /** Ориентир за полотно, ₽ */
+  total: number;
+  city: string;
+}
+
+/** Текст «Отправить расчёт мастеру» из калькулятора */
+export function buildCalcMessage(r: CalcRequest): string {
+  const room = r.width && r.length ? `~${num(r.width)}×${num(r.length)} м (${num(r.area)} м²)` : `~${num(r.area)} м²`;
+  const canvas = clean(r.canvas) ? `полотно ${clean(r.canvas)}` : 'полотно — посоветуйте';
+  return `Расчёт с сайта: комната ${room}, ${canvas}, ориентир от ${rub(r.total)} ₽ за полотно, город ${clean(r.city)}. Хочу записаться на замер.`;
 }
 
 /** Текст «Хочу такой потолок» со ссылкой на работу */

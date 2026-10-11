@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildLikeMessage, buildMeasureMessage, emptyContact, waLink, workUrl } from './whatsapp';
+import { buildCalcMessage, buildLikeMessage, buildMeasureMessage, emptyContact, waLink, workUrl } from './whatsapp';
 
 const contact = { ...emptyContact, name: 'Магомед', city: 'Хасавюрт', when: 'В выходные' };
 
@@ -49,5 +49,21 @@ describe('ссылки', () => {
     const text = buildLikeMessage('Парящий потолок в ванной', 'w-530', 'https://santlada.ru');
     expect(text).toContain('«Парящий потолок в ванной»');
     expect(text).toContain('https://santlada.ru/#w-530');
+  });
+});
+
+describe('расчёт с сайта', () => {
+  it('по размерам комнаты — точно по шаблону', () => {
+    const text = buildCalcMessage({ width: 3.5, length: 4.5, area: 15.8, canvas: 'MSD Premium', total: 7110, city: 'Хасавюрт' });
+    expect(text).toBe(
+      'Расчёт с сайта: комната ~3,5×4,5 м (15,8 м²), полотно MSD Premium, ориентир от 7 110 ₽ за полотно, город Хасавюрт. Хочу записаться на замер.',
+    );
+  });
+
+  it('по площади и без выбранного полотна', () => {
+    const text = buildCalcMessage({ area: 20, canvas: '', total: 9000, city: 'Кизляр' });
+    expect(text).toContain('комната ~20 м²,');
+    expect(text).toContain('полотно — посоветуйте');
+    expect(text).toContain('от 9 000 ₽ за полотно');
   });
 });

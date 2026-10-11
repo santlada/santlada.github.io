@@ -210,7 +210,7 @@ function Tile({ work, square, portrait = false, onOpen }: { work: Work; square: 
         className="absolute top-2.5 right-2.5 hidden items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[0.8125rem] font-semibold text-ink opacity-0 shadow-[var(--shadow-float)] transition-opacity group-hover:opacity-100 focus-visible:opacity-100 [@media(hover:hover)]:inline-flex"
       >
         <IconWhatsApp size={14} className="text-wa" />
-        Хочу такой
+        Хочу такой потолок
       </a>
     </figure>
   );

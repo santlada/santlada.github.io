@@ -2,9 +2,12 @@
 import { Image } from 'astro:assets';
 import { ceilingTypes } from '../config/site';
 import { getBeforeAfter } from '../lib/works';
+import { waLink } from '../lib/whatsapp';
+import { IconWhatsApp } from './icons';
 
 // Пары фото — src/assets/before-after/<id>-do.jpg и <id>-posle.jpg, подписи — src/data/works.ts
 const pairs = getBeforeAfter();
+const wa = waLink('Здравствуйте! Пришлю фото своего потолка — подскажите, что можно сделать.');
 ---
 
 {
@@ -12,13 +15,13 @@ const pairs = getBeforeAfter();
     <section id="do-posle" class="page scroll-mt-20" data-tone="white" data-reveal aria-labelledby="do-posle-title">
       <div class="container-page py-20 lg:py-32">
         <div class="max-w-2xl" data-rise>
-          <h2 id="do-posle-title" class="h-section">Было — стало</h2>
+          <h2 id="do-posle-title" class="h-section">До и после</h2>
           <p class="lead mt-3">Одни и те же комнаты: какими я их застал и какими оставил после монтажа.</p>
         </div>
 
         <ul class="mt-10 grid gap-10 lg:gap-8">
           {pairs.map((pair) => (
-            <li class="grid grid-cols-2 gap-x-2.5 gap-y-4 sm:gap-x-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.3fr)] lg:items-center lg:gap-6" data-rise>
+            <li class="grid grid-cols-2 gap-x-2.5 gap-y-4 sm:gap-x-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,1.3fr)] lg:items-center lg:gap-6">
               {[
                 { img: pair.before, label: 'До', tag: 'bg-brand text-white', alt: `До: ${pair.title}` },
                 { img: pair.after, label: 'После', tag: 'bg-white text-brand-deep', alt: `После: ${pair.title}` },
@@ -44,6 +47,14 @@ const pairs = getBeforeAfter();
             </li>
           ))}
         </ul>
+
+        <div class="mt-12 flex flex-col gap-4 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <p class="max-w-xl text-[1.0625rem] leading-relaxed">Пришлите фото своего потолка — скажу, что из него можно сделать.</p>
+          <a href={wa} target="_blank" rel="noopener" class="btn-wa shrink-0">
+            <IconWhatsApp size={18} />
+            Написать в WhatsApp
+          </a>
+        </div>
       </div>
     </section>
   )

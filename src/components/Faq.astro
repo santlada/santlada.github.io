@@ -1,5 +1,9 @@
 ---
 import { faq } from '../config/site';
+import { waLink } from '../lib/whatsapp';
+import { IconWhatsApp } from './icons';
+
+const wa = waLink('Здравствуйте! У меня вопрос про натяжной потолок.');
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -13,12 +17,16 @@ const jsonLd = {
     <div class="grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)]">
       <div class="lg:sticky lg:top-28 lg:self-start" data-rise="left">
         <h2 id="voprosy-title" class="h-section">Что спрашивают перед заказом</h2>
-        <p class="lead mt-3">Не нашли ответ — напишите мне в WhatsApp, отвечу.</p>
+        <p class="lead mt-3">Не нашли ответ — напишите мне, отвечу.</p>
+        <a href={wa} target="_blank" rel="noopener" class="btn-primary mt-6">
+          <IconWhatsApp size={18} />
+          Написать в WhatsApp
+        </a>
       </div>
       <div class="divide-y divide-line border-y border-line">
         {
           faq.map((item) => (
-            <details class="group" data-rise>
+            <details class="group">
               <summary class="flex min-h-14 list-none items-center justify-between gap-4 py-5 text-[1.0625rem] font-semibold sm:text-[1.125rem] [&::-webkit-details-marker]:hidden">
                 {item.q}
                 <span class="grid size-8 shrink-0 place-items-center rounded-full bg-white text-brand-deep transition-transform duration-200 group-open:rotate-45" aria-hidden="true">
