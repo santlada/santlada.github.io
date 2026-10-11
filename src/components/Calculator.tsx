@@ -15,8 +15,8 @@ type Mode = 'size' | 'area';
 
 const ADVISE = '';
 
-/** Фактура полотна; на цену не влияет — «Другое» (сатин, цвет, принт) обсуждаем на замере */
-const finishes = ['Матовое', 'Глянцевое', 'Другое'] as const;
+/** Фактура полотна — названия как в разделе «Полотна»; на цену не влияет */
+const finishes = ['Матовое', 'Сатин', 'Глянец'] as const;
 
 export default function Calculator() {
   const uid = useId();

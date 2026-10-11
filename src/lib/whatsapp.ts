@@ -44,7 +44,7 @@ export interface CalcRequest {
   area: number;
   /** Название полотна или пусто — «посоветуйте» */
   canvas: string;
-  /** Фактура: «Матовое», «Глянцевое» или «Другое» (необязательно) */
+  /** Фактура: «Матовое», «Сатин» или «Глянец» (необязательно) */
   finish?: string;
   /** Ориентир за полотно, ₽ */
   total: number;
@@ -56,7 +56,7 @@ export function buildCalcMessage(r: CalcRequest): string {
   const room = r.width && r.length ? `~${num(r.width)}×${num(r.length)} м (${num(r.area)} м²)` : `~${num(r.area)} м²`;
   const finish = clean(r.finish ?? '');
   const canvasName = clean(r.canvas) ? `полотно ${clean(r.canvas)}` : 'полотно — посоветуйте';
-  const canvas = !finish ? canvasName : finish === 'Другое' ? `${canvasName}, фактура другая — обсудим` : `${canvasName}, ${finish.toLowerCase()}`;
+  const canvas = finish ? `${canvasName}, ${finish.toLowerCase()}` : canvasName;
   return `Расчёт с сайта: комната ${room}, ${canvas}, ориентир от ${rub(r.total)} ₽ за полотно, город ${clean(r.city)}. Хочу записаться на замер.`;
 }
 
