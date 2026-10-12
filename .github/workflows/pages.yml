@@ -18,8 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      SITE_URL: https://xuz4ima-sketch.github.io
-      SITE_BASE: /santlada/
+      SITE_URL: https://santlada.github.io
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

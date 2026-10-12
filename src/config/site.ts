@@ -32,7 +32,7 @@ export const site = {
   instagram: '',
 
   /** Адрес сайта — используется в ссылках на примеры в заявке */
-  url: 'https://santlada.ru',
+  url: 'https://santlada.github.io',
 
   baseCity: 'Хасавюрт',
   /** Город в предложном падеже: «в Хасавюрте» */

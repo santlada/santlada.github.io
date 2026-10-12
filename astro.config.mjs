@@ -5,9 +5,9 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  // Адрес сайта после покупки домена. Нужен для карты сайта и ссылок в заявках.
-  site: process.env.SITE_URL ?? 'https://santlada.ru',
-  // На GitHub Pages сайт лежит в подпапке (SITE_BASE=/santlada/), на своём домене — в корне.
+  // Адрес сайта. Нужен для карты сайта и ссылок в заявках.
+  site: process.env.SITE_URL ?? 'https://santlada.github.io',
+  // Репозиторий santlada.github.io отдаёт сайт из корня. Для обычного репозитория задайте SITE_BASE=/имя-репозитория/.
   base: process.env.SITE_BASE ?? '/',
   // Разрешаем открывать превью через туннель (ссылка для проверки на телефоне).
   server: { allowedHosts: true },
