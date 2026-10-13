@@ -51,6 +51,7 @@ export default function CityField({ id, value, onChange, error, selectRef }: Pro
           className="field mt-2"
           placeholder="Название города или села"
           aria-label="Название города или села"
+          maxLength={80}
           value={listed ? '' : value}
           onChange={(e) => onChange(e.target.value)}
         />

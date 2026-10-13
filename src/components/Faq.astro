@@ -33,6 +33,6 @@ const jsonLd = {
         }
       </div>
     </div>
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />
   </div>
 </section>

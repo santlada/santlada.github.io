@@ -2,7 +2,7 @@
  * Расчёт полотна для блока «Посчитайте полотно»: площадь комнаты × цена полотна за м² из config/canvases.ts.
  * Только полотно — профиль, свет и светильники считаются после замера.
  */
-import { canvases, type CanvasInfo } from '../config/canvases';
+import { canvases, priceOf, type CanvasInfo, type Finish } from '../config/canvases';
 
 /** Самый широкий рулон, м: шире — полотно сваривают из двух частей, появляется шов */
 export const WIDEST_ROLL = 5.5;
@@ -17,9 +17,16 @@ export function rollOf(c?: CanvasInfo): number {
   return c?.roll ?? WIDEST_ROLL;
 }
 
-/** Цена за м² для расчёта: у выбранного полотна — его «от», без выбора — самое доступное полотно */
-export function pricePerM2(c?: CanvasInfo): number {
-  return c ? c.price : Math.min(...canvases.map((x) => x.price));
+/** Фактуры, которые можно выбрать в калькуляторе: у выбранного полотна — его, без выбора — все три */
+export const finishesOf = (c?: CanvasInfo): Finish[] => c?.finishes ?? ['matte', 'satin', 'gloss'];
+
+/**
+ * Цена за м² для расчёта: у выбранного полотна — цена выбранной фактуры, без выбора — у самого доступного полотна.
+ * Если полотно не выпускается в такой фактуре, берётся его первая.
+ */
+export function pricePerM2(c?: CanvasInfo, finish?: Finish): number {
+  const of = (x: CanvasInfo) => priceOf(x, finish && x.finishes.includes(finish) ? finish : x.finishes[0]);
+  return c ? of(c) : Math.min(...canvases.map(of));
 }
 
 /** Большая комната: одна из сторон от 5 м — расходуется больше полотна, к цене за м² добавляется надбавка */

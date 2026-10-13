@@ -3,6 +3,7 @@ import { canvases } from '../config/canvases';
 import { measureTimes } from '../config/site';
 import { buildMeasureMessage, emptyContact, waLink, type Contact } from '../lib/whatsapp';
 import CityField from './CityField';
+import ObjectDetails from './ObjectDetails';
 import { IconWhatsApp } from './icons';
 
 interface Props {
@@ -46,11 +47,14 @@ export default function QuickMeasure({ canvas = '', locked = false }: Props) {
             className="field"
             autoComplete="given-name"
             placeholder="Имя"
+            maxLength={60}
             value={contact.name}
             onChange={(e) => set({ name: e.target.value })}
           />
         </div>
       </div>
+
+      <ObjectDetails id={uid} value={contact} onChange={set} />
 
       <fieldset>
         <legend className="label">Когда удобно на замер</legend>
@@ -86,7 +90,8 @@ export default function QuickMeasure({ canvas = '', locked = false }: Props) {
         <textarea
           id={`${uid}-comment`}
           className="field min-h-[5.5rem] resize-y"
-          placeholder="Например, две комнаты и кухня, хочу световые линии. Фото понравившегося потолка можно прислать в чате"
+          placeholder="Например, две комнаты и кухня. Фото понравившегося потолка можно прислать в чате"
+          maxLength={600}
           value={contact.comment}
           onChange={(e) => set({ comment: e.target.value })}
         />
@@ -112,7 +117,7 @@ export default function QuickMeasure({ canvas = '', locked = false }: Props) {
       </a>
       {sent && (
         <p className="text-[0.9375rem] text-ink-soft" role="status">
-          Открыли WhatsApp с текстом {ordering ? 'заказа' : 'заявки'}. Нажмите «Отправить» в чате — заявка придёт мне, и, если есть фото потолка, который понравился, приложите его. Я отвечу и договорюсь с вами о времени.
+          Открыли WhatsApp с текстом {ordering ? 'заказа' : 'заявки'}. Нажмите «Отправить» в чате — заявка придёт мне, и, если есть фото потолка, который понравился, приложите его. Размеры, цвета и детали обсудим в чате — я отвечу и договорюсь с вами о времени.
         </p>
       )}
     </form>

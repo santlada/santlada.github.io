@@ -66,11 +66,17 @@ export default function WorksGallery({ works, compact = false, syncUrl = false, 
     const params = new URLSearchParams(window.location.search);
     const vid = params.get('vid') as Filter | null;
     let current: Filter = 'all';
-    if (syncUrl && filters && vid && vid in filterNames) {
+    if (syncUrl && filters && vid && Object.hasOwn(filterNames, vid)) {
       current = vid;
       setFilter(vid);
     }
-    const id = decodeURIComponent(window.location.hash.slice(1));
+    // Битый адрес (#%E0%A4%A) не должен ронять страницу
+    let id = '';
+    try {
+      id = decodeURIComponent(window.location.hash.slice(1));
+    } catch {
+      return;
+    }
     if (!id) return;
     const linked = works.find((w) => w.id === id);
     if (!linked || !ownsLink(linked)) return;

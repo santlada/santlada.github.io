@@ -9,6 +9,22 @@ describe('калькулятор полотна', () => {
     expect(pricePerM2(byId('msd'))).toBe(450);
     expect(pricePerM2(byId('teqtum'))).toBe(1200);
     expect(pricePerM2()).toBe(450);
+  });
+
+  it('цена зависит от фактуры: матовое дешевле сатина и глянца', () => {
+    expect(pricePerM2(byId('msd'), 'matte')).toBe(450);
+    expect(pricePerM2(byId('msd'), 'satin')).toBe(500);
+    expect(pricePerM2(byId('msd'), 'gloss')).toBe(500);
+    expect(pricePerM2(undefined, 'gloss')).toBe(500);
+    expect(pricePerM2(byId('bauf'), 'matte')).toBe(650);
+    expect(pricePerM2(byId('bauf'), 'satin')).toBe(700);
+    expect(pricePerM2(byId('bauf'), 'gloss')).toBe(700);
+    // Недоступная фактура — цена полотна
+
+    expect(pricePerM2(byId('teqtum'), 'gloss')).toBe(1200);
+  });
+
+  it('рулон берётся из данных полотен', () => {
     expect(rollOf(byId('msd'))).toBe(5.5);
     expect(rollOf(byId('teqtum'))).toBe(4.5);
     expect(rollOf(byId('bauf'))).toBe(5.5);

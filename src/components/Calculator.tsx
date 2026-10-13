@@ -1,8 +1,9 @@
 import { useId, useRef, useState, type KeyboardEvent, type Ref } from 'react';
-import { canvases } from '../config/canvases';
-import { BIG_SIDE, limits, needsSeam, num, parseNum, pricePerM2, rollOf, roundArea, rub, surchargeOf } from '../lib/calc';
-import { buildCalcMessage, waLink } from '../lib/whatsapp';
+import { canvases, finishNames, type Finish } from '../config/canvases';
+import { BIG_SIDE, finishesOf, limits, needsSeam, num, parseNum, pricePerM2, rollOf, roundArea, rub, surchargeOf } from '../lib/calc';
+import { buildCalcMessage, emptyDetails, waLink, type Details } from '../lib/whatsapp';
 import CityField from './CityField';
+import ObjectDetails from './ObjectDetails';
 import { IconWhatsApp } from './icons';
 
 /**
@@ -13,16 +14,14 @@ import { IconWhatsApp } from './icons';
 
 const ADVISE = '';
 
-/** Фактура полотна — названия как в разделе «Полотна»; на цену не влияет */
-const finishes = ['Матовое', 'Сатин', 'Глянец'] as const;
-
 export default function Calculator() {
   const uid = useId();
   const [width, setWidth] = useState('3,5');
   const [length, setLength] = useState('4,5');
   const [canvasName, setCanvasName] = useState('MSD Premium');
-  const [finish, setFinish] = useState<(typeof finishes)[number]>('Матовое');
+  const [finishChoice, setFinish] = useState<Finish>('matte');
   const [city, setCity] = useState('');
+  const [details, setDetails] = useState<Details>(emptyDetails);
   const [error, setError] = useState('');
   const [sent, setSent] = useState(false);
   const selectRef = useRef<HTMLSelectElement>(null);
@@ -30,13 +29,18 @@ export default function Calculator() {
 
   const canvas = canvases.find((c) => c.name === canvasName);
   const roll = rollOf(canvas);
+  // Не все полотна бывают во всех фактурах (TEQTUM — только матовое): недоступный выбор заменяется первой фактурой полотна
+  const finishes = finishesOf(canvas);
+  const finish = finishes.includes(finishChoice) ? finishChoice : finishes[0];
 
   const w = parseNum(width);
   const l = parseNum(length);
   const inSide = (v: number) => v >= limits.side.min && v <= limits.side.max;
   const sizeOk = inSide(w) && inSide(l);
   const bigRoom = sizeOk && surchargeOf(w, l) > 0;
-  const price = pricePerM2(canvas) + (bigRoom ? surchargeOf(w, l) : 0);
+  const finishExtra = pricePerM2(canvas, finish) - pricePerM2(canvas, 'matte');
+  const dearerFinish = finishExtra > 0;
+  const price = pricePerM2(canvas, finish) + (bigRoom ? surchargeOf(w, l) : 0);
 
   const valid = sizeOk;
   const area = valid ? roundArea(w * l) : 0;
@@ -48,9 +52,10 @@ export default function Calculator() {
     length: l,
     area,
     canvas: canvasName,
-    finish,
+    finish: finishNames[finish].name,
     total,
     city,
+    ...details,
   });
 
   return (
@@ -107,7 +112,7 @@ export default function Calculator() {
                   onChange={() => setFinish(f)}
                   className="sr-only"
                 />
-                {f}
+                {finishNames[f].name}
               </label>
             ))}
           </div>
@@ -124,6 +129,8 @@ export default function Calculator() {
           }}
         />
 
+        <ObjectDetails id={`${uid}-obj`} value={details} onChange={(patch) => setDetails((d) => ({ ...d, ...patch }))} />
+
         <div className="calc-result" aria-live="polite">
           {valid ? (
             <>
@@ -134,6 +141,7 @@ export default function Calculator() {
                 {num(area)} м² × {rub(price)} ₽ за м²
               </p>
               {!canvas && <p className="calc-how">Посчитано по самому доступному полотну.</p>}
+              {dearerFinish && <p className="calc-how">{finishNames[finish].name} дороже матового на {rub(finishExtra)} ₽ за м².</p>}
               {bigRoom && <p className="calc-how">Сторона от {BIG_SIDE} м — уходит больше полотна, поэтому +50 ₽ к цене за м².</p>}
             </>
           ) : (

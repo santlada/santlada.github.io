@@ -111,6 +111,7 @@ export const canvases: CanvasInfo[] = [
     nameRu: 'Бауф',
     origin: 'Немецкая марка · ПВХ-плёнка',
     price: 650,
+    prices: { matte: 650, satin: 700, gloss: 700 },
     tone: '#fbfcfe',
     finishes: ['matte', 'satin', 'gloss'],
     scenes: [

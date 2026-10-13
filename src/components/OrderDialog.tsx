@@ -50,7 +50,7 @@ export default function OrderDialog() {
         </button>
       </div>
       <p className="mb-5 text-[0.9375rem] leading-relaxed text-ink-soft">
-        Оставьте город и пару деталей — заявка придёт мне в WhatsApp. Я отвечу, договоримся о бесплатном замере и я назову точную стоимость.
+        Оставьте адрес и пару деталей — заявка придёт мне в WhatsApp. Всё, что не успели указать, обсудим в чате: я отвечу, договоримся о бесплатном замере и я назову точную стоимость.
       </p>
       {session > 0 && <QuickMeasure key={session} canvas={canvas} locked />}
     </dialog>

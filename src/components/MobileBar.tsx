@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { navLinks, site } from '../config/site';
 import { CANVAS_EVENT, openOrder } from '../lib/order';
-import { waLink } from '../lib/whatsapp';
+import { helloMessage, waLink } from '../lib/whatsapp';
 import { IconArrowUp, IconClose, IconMenu, IconPhone, IconWhatsApp } from './icons';
 
 /**
@@ -10,7 +10,7 @@ import { IconArrowUp, IconClose, IconMenu, IconPhone, IconWhatsApp } from './ico
  * (в карточке полотна на телефоне своей кнопки нет — там всё место отдано картинке).
  */
 export default function MobileBar() {
-  const wa = waLink('Здравствуйте! Пишу с сайта по поводу натяжного потолка.');
+  const wa = waLink(helloMessage);
   const [canvas, setCanvas] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
   const [showTop, setShowTop] = useState(false);

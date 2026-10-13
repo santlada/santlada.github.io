@@ -127,6 +127,17 @@ export const navLinks = [
 
 export const measureTimes = ['Как можно скорее', 'В будни', 'В выходные', 'Обсудим в переписке'];
 
+/** Ответ «не определился» в выборе вида потолка и света: сбрасывает остальные варианты */
+export const adviseCeiling = 'Посоветуйте';
+export const lightingUnsure = 'Пока не знаю';
+export const lightingNone = 'Без света';
+
+/** Виды потолка в форме — названия те же, что в блоке «Работы» */
+export const ceilingChoices = [...ceilingOrder.map((t) => ceilingTypes[t].name), adviseCeiling];
+
+/** Свет в форме: можно выбрать несколько, кроме «Без света» и «Пока не знаю» */
+export const lightingChoices = ['Точечные светильники', 'Люстра', 'Трековая система', lightingNone, lightingUnsure];
+
 /** Дополнения к потолку — блок «Как проходит заказ». Цена каждого — по проекту, после замера. */
 export const extras = [
   'Световые линии',
